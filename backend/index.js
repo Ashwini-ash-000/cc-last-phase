@@ -15,6 +15,7 @@ require("dotenv").config();
 // These modules define the API endpoints related to each functionality.
 const feedbackRoutes = require("./routes/feedback");
 const suggestionRoutes = require("./routes/suggestion");
+const authRoutes = require("./routes/auth"); // <-- NEW: Import auth routes
 
 // Initialize the Express application.
 const app = express();
@@ -33,6 +34,7 @@ app.use(express.json());
 // API Routes Mounting:
 // Mount the feedback routes under the '/api/feedback' path.
 // All routes defined in feedbackRoutes (e.g., POST /, GET /) will be prefixed with /api/feedback.
+app.use("/api/auth", authRoutes);       // <-- NEW: Mount auth routes
 app.use("/api/feedback", feedbackRoutes);
 // Mount the suggestion routes under the '/api/suggestions' path.
 // All routes defined in suggestionRoutes (e.g., POST /, GET /) will be prefixed with /api/suggestions.

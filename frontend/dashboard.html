@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Faculty Feedback Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 font-sans">
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl text-center">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Welcome to Your Dashboard!</h1>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Your Profile</h2>
+        <div class="text-left inline-block space-y-2 text-lg text-gray-700">
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Roll No:</strong> <span id="userRollNo"></span></p>
+            <p><strong>Branch:</strong> <span id="userBranch"></span></p>
+        </div>
+    </div>
+
+    <div class="flex flex-col space-y-4 mb-8">
+        <a href="feedback.html" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            Submit & View Feedback
+        </a>
+        <a href="suggestion.html" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            Submit & View Suggestions
+        </a>
+    </div>
+
+    <button id="logoutButton"
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out">
+        Logout
+    </button>
+</div>
+
+<script type="module">
+    // Import authentication utilities
+    import { requireAuth, getCurrentUser, clearAuthData } from './auth.js';
+
+    // Ensure user is authenticated before displaying dashboard
+    requireAuth();
+
+    // Get user data and display it
+    const user = getCurrentUser();
+    if (user) {
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userRollNo').textContent = user.roll_no;
+        document.getElementById('userBranch').textContent = user.branch;
+    }
+
+    // Handle logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+        clearAuthData(); // Clear token and user data from local storage
+        window.location.href = 'login.html'; // Redirect to login page
+    });
+</script>
+</body>
+</html>

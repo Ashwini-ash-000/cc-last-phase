@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Feedback</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Tailwind CSS CDN for basic styling -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
@@ -27,16 +26,10 @@
 
         <div>
             <label for="comment" class="block text-gray-700 text-sm font-bold mb-2">Comment:</label>
-            <textarea id="comment" name="comment" rows="4"
+            <textarea id="comment" name="comment" rows="4" required
                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
         </div>
-
-        <div>
-            <label for="submitted_by" class="block text-gray-700 text-sm font-bold mb-2">Your Name (Optional):</label>
-            <input type="text" id="submitted_by" name="submitted_by"
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-
+        <!-- submitted_by field is removed as it's now derived from authentication -->
         <button type="submit"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Submit Feedback
@@ -47,12 +40,11 @@
 
     <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Recent Feedback</h2>
     <div id="feedbackList" class="space-y-4">
-        <!-- Feedback entries will be loaded here -->
         <p class="text-gray-500 text-center" id="loadingMessage">Loading feedback...</p>
     </div>
 </div>
 
-<!-- Custom Modal for Alerts (replacing alert()) -->
+<!-- Custom Modal for Alerts -->
 <div id="customAlert" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
         <p id="alertMessage" class="text-lg mb-4"></p>
@@ -62,101 +54,102 @@
     </div>
 </div>
 
-<script>
-    // IMPORTANT: This URL is crucial for your frontend to communicate with your live backend.
-    // It has been updated to the URL of your successfully deployed Render backend service.
-    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com";
+<script type="module">
+    // Import authentication utilities
+    import { requireAuth, getAuthToken } from './auth.js';
 
-    // Function to show custom alert (replaces browser's alert())
+    // Ensure user is authenticated before proceeding
+    requireAuth();
+
+    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; // <-- REPLACE THIS!
+
     function showCustomAlert(message) {
         document.getElementById('alertMessage').textContent = message;
         document.getElementById('customAlert').classList.remove('hidden');
     }
 
-    // Event listener for the custom alert close button
     document.getElementById('alertCloseButton').addEventListener('click', () => {
         document.getElementById('customAlert').classList.add('hidden');
     });
 
-    // Function to fetch and display feedback from the backend API
     async function fetchFeedback() {
         const feedbackList = document.getElementById('feedbackList');
         const loadingMessage = document.getElementById('loadingMessage');
-        loadingMessage.classList.remove('hidden'); // Show loading message initially
+        loadingMessage.classList.remove('hidden');
+
+        const token = getAuthToken(); // Get the JWT token
 
         try {
-            // Make a GET request to the feedback API endpoint
-            const response = await fetch(`${BACKEND_URL}/api/feedback`);
+            const response = await fetch(`${BACKEND_URL}/api/feedback`, {
+                headers: {
+                    'x-auth-token': token // Send the token in the header
+                }
+            });
             if (!response.ok) {
-                // If the response is not OK (e.g., 404, 500), throw an error
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.msg || `HTTP error! status: ${response.status}`);
             }
-            const feedbackEntries = await response.json(); // Parse the JSON response
+            const feedbackEntries = await response.json();
 
-            feedbackList.innerHTML = ''; // Clear any previously loaded feedback
+            feedbackList.innerHTML = '';
 
             if (feedbackEntries.length === 0) {
-                // Display a message if no feedback has been submitted yet
                 feedbackList.innerHTML = '<p class="text-gray-500 text-center">No feedback submitted yet.</p>';
             } else {
-                // Iterate over each feedback entry and create a display card for it
                 feedbackEntries.forEach(entry => {
                     const feedbackCard = document.createElement('div');
-                    // Add Tailwind CSS classes for styling the card
                     feedbackCard.className = 'bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200';
                     feedbackCard.innerHTML = `
                         <p class="text-gray-900 text-lg font-semibold">${entry.faculty_name} - Rating: ${entry.rating}/5</p>
                         <p class="text-gray-700 mt-2">${entry.comment}</p>
                         <p class="text-gray-500 text-sm mt-2">Submitted by: ${entry.submitted_by || 'Anonymous'} on ${new Date(entry.submitted_at).toLocaleString()}</p>
                     `;
-                    feedbackList.appendChild(feedbackCard); // Add the card to the list
+                    feedbackList.appendChild(feedbackCard);
                 });
             }
         } catch (error) {
-            // Log and display an error message if fetching feedback fails
             console.error("Error fetching feedback:", error);
-            feedbackList.innerHTML = '<p class="text-red-500 text-center">Failed to load feedback. Please check your backend URL and server status.</p>';
+            showCustomAlert(error.message || "Failed to load feedback. Please check your backend URL and server status.");
+            feedbackList.innerHTML = '<p class="text-red-500 text-center">Failed to load feedback.</p>';
         } finally {
-            loadingMessage.classList.add('hidden'); // Hide the loading message once done
+            loadingMessage.classList.add('hidden');
         }
     }
 
-    // Event listener for the feedback form submission
     document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
-        e.preventDefault(); // Prevent the default form submission behavior (page reload)
+        e.preventDefault();
 
-        const formData = new FormData(this); // Get form data
-        const body = Object.fromEntries(formData.entries()); // Convert form data to a plain object
-
-        // Ensure rating is parsed as an integer
+        const formData = new FormData(this);
+        const body = Object.fromEntries(formData.entries());
         body.rating = parseInt(body.rating, 10);
 
+        const token = getAuthToken(); // Get the JWT token
+
         try {
-            // Make a POST request to submit the feedback
             const res = await fetch(`${BACKEND_URL}/api/feedback`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" }, // Specify JSON content type
-                body: JSON.stringify(body), // Send the data as a JSON string
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-auth-token": token // Send the token in the header
+                },
+                body: JSON.stringify(body),
             });
 
-            const result = await res.json(); // Parse the JSON response from the server
+            const result = await res.json();
 
-            if (res.ok) { // Check if the HTTP response status is successful (2xx)
-                showCustomAlert(result.message || "Feedback submitted successfully!"); // Show success message
-                this.reset(); // Clear the form fields
-                fetchFeedback(); // Refresh the feedback list to show the new entry
+            if (res.ok) {
+                showCustomAlert(result.message || "Feedback submitted successfully!");
+                this.reset();
+                fetchFeedback();
             } else {
-                // If the response was not OK, show the error message from the backend or a generic one
-                showCustomAlert(result.error || "Failed to submit feedback. Please try again.");
+                showCustomAlert(result.error || result.msg || "Failed to submit feedback.");
             }
         } catch (error) {
-            // Handle network errors or other issues during the fetch operation
             console.error("Error submitting feedback:", error);
-            showCustomAlert("An unexpected error occurred. Please check your network connection and try again.");
+            showCustomAlert("An error occurred. Please try again.");
         }
     });
 
-    // Fetch feedback entries immediately when the page finishes loading
     document.addEventListener('DOMContentLoaded', fetchFeedback);
 </script>
 </body>

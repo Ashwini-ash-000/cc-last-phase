@@ -1,0 +1,18 @@
+/* frontend/style.css */
+/* Basic styles for HTML to work with Tailwind CSS */
+/* Not strictly necessary if using Tailwind, but good for custom additions */
+
+body {
+    font-family: 'Inter', sans-serif; /* Using Inter font, common for modern web */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Any specific custom styles can go here */
+/* For example, if you want to override some Tailwind defaults or add unique animations */
+
+/* Example: A simple hover effect on buttons if not using Tailwind's built-in */
+button:hover {
+    opacity: 0.9;
+}

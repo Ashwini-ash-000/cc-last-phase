@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Suggestions</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS CDN for basic styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Submit a Suggestion</h1>
+
+    <form id="suggestionForm" class="space-y-4">
+        <div>
+            <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Suggestion Title:</label>
+            <input type="text" id="title" name="title" required
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div>
+            <label for="suggestion" class="block text-gray-700 text-sm font-bold mb-2">Suggestion Details:</label>
+            <textarea id="suggestion" name="suggestion" rows="6" required
+                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        </div>
+
+        <div>
+            <label for="submitted_by" class="block text-gray-700 text-sm font-bold mb-2">Your Name (Optional):</label>
+            <input type="text" id="submitted_by" name="submitted_by"
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <button type="submit"
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Submit Suggestion
+        </button>
+    </form>
+
+    <hr class="my-8 border-t border-gray-300">
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Recent Suggestions</h2>
+    <div id="suggestionList" class="space-y-4">
+        <!-- Suggestion entries will be loaded here -->
+        <p class="text-gray-500 text-center" id="loadingMessage">Loading suggestions...</p>
+    </div>
+</div>
+
+<!-- Custom Modal for Alerts (replacing alert()) -->
+<div id="customAlert" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+        <p id="alertMessage" class="text-lg mb-4"></p>
+        <button id="alertCloseButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            OK
+        </button>
+    </div>
+</div>
+
+<script>
+    // IMPORTANT: This URL is crucial for your frontend to communicate with your live backend.
+    // It has been updated to the URL of your successfully deployed Render backend service.
+    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com";
+
+    // Function to show custom alert (replaces browser's alert())
+    function showCustomAlert(message) {
+        document.getElementById('alertMessage').textContent = message;
+        document.getElementById('customAlert').classList.remove('hidden');
+    }
+
+    // Event listener for the custom alert close button
+    document.getElementById('alertCloseButton').addEventListener('click', () => {
+        document.getElementById('customAlert').classList.add('hidden');
+    });
+
+    // Function to fetch and display suggestions from the backend API
+    async function fetchSuggestions() {
+        const suggestionList = document.getElementById('suggestionList');
+        const loadingMessage = document.getElementById('loadingMessage');
+        loadingMessage.classList.remove('hidden'); // Show loading message initially
+
+        try {
+            // Make a GET request to the suggestions API endpoint
+            const response = await fetch(`${BACKEND_URL}/api/suggestions`);
+            if (!response.ok) {
+                // If the response is not OK (e.g., 404, 500), throw an error
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const suggestionEntries = await response.json(); // Parse the JSON response
+
+            suggestionList.innerHTML = ''; // Clear any previously loaded suggestions
+
+            if (suggestionEntries.length === 0) {
+                // Display a message if no suggestions have been submitted yet
+                suggestionList.innerHTML = '<p class="text-gray-500 text-center">No suggestions submitted yet.</p>';
+            } else {
+                // Iterate over each suggestion entry and create a display card for it
+                suggestionEntries.forEach(entry => {
+                    const suggestionCard = document.createElement('div');
+                    // Add Tailwind CSS classes for styling the card
+                    suggestionCard.className = 'bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200';
+                    suggestionCard.innerHTML = `
+                        <p class="text-gray-900 text-lg font-semibold">Title: ${entry.title}</p>
+                        <p class="text-gray-700 mt-2">${entry.suggestion}</p>
+                        <p class="text-gray-500 text-sm mt-2">Status: <span class="font-medium ${entry.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}">${entry.status}</span></p>
+                        <p class="text-gray-500 text-sm mt-1">Submitted by: ${entry.submitted_by || 'Anonymous'} on ${new Date(entry.submitted_at).toLocaleString()}</p>
+                    `;
+                    suggestionList.appendChild(suggestionCard); // Add the card to the list
+                });
+            }
+        } catch (error) {
+            // Log and display an error message if fetching suggestions fails
+            console.error("Error fetching suggestions:", error);
+            suggestionList.innerHTML = '<p class="text-red-500 text-center">Failed to load suggestions. Please check your backend URL and server status.</p>';
+        } finally {
+            loadingMessage.classList.add('hidden'); // Hide the loading message once done
+        }
+    }
+
+    // Event listener for the suggestion form submission
+    document.getElementById('suggestionForm').addEventListener('submit', async function (e) {
+        e.preventDefault(); // Prevent the default form submission behavior (page reload)
+
+        const formData = new FormData(this); // Get form data
+        const body = Object.fromEntries(formData.entries()); // Convert form data to a plain object
+
+        try {
+            // Make a POST request to submit the suggestion
+            const res = await fetch(`${BACKEND_URL}/api/suggestions`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }, // Specify JSON content type
+                body: JSON.stringify(body), // Send the data as a JSON string
+            });
+
+            const result = await res.json(); // Parse the JSON response from the server
+
+            if (res.ok) { // Check if the HTTP response status is successful (2xx)
+                showCustomAlert(result.message || "Suggestion submitted successfully!"); // Show success message
+                this.reset(); // Clear the form fields
+                fetchSuggestions(); // Refresh the suggestion list to show the new entry
+            } else {
+                // If the response was not OK, show the error message from the backend or a generic one
+                showCustomAlert(result.error || "Failed to submit suggestion. Please try again.");
+            }
+        } catch (error) {
+            // Handle network errors or other issues during the fetch operation
+            console.error("Error submitting suggestion:", error);
+            showCustomAlert("An unexpected error occurred. Please check your network connection and try again.");
+        }
+    });
+
+    // Fetch suggestion entries immediately when the page finishes loading
+    document.addEventListener('DOMContentLoaded', fetchSuggestions);
+</script>
+</body>
+</html>

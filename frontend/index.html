@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Feedback Portal</title>
+    <!-- Link to your custom stylesheet for consistent styling -->
     <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS CDN for modern and responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 font-sans">
@@ -14,15 +16,20 @@
 </div>
 
 <script type="module">
-    // Import authentication utilities
+    // Import authentication utilities from auth.js.
+    // isAuthenticated: Checks if a JWT token exists in local storage.
+    // redirectToDashboardIfAuthenticated: Redirects to dashboard if user is logged in.
     import { isAuthenticated, redirectToDashboardIfAuthenticated } from './auth.js';
 
-    // Immediately check authentication status on page load
+    // Immediately check the authentication status when this page loads.
+    // This makes 'index.html' act as a smart redirector.
     if (isAuthenticated()) {
-        // If authenticated, redirect to the dashboard
+        // If a token is found (meaning the user is likely authenticated),
+        // redirect them directly to the dashboard page.
         redirectToDashboardIfAuthenticated();
     } else {
-        // If not authenticated, redirect to the login page
+        // If no token is found (meaning the user is not authenticated),
+        // redirect them to the login page to sign in or register.
         window.location.href = 'login.html';
     }
 </script>

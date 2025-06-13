@@ -5,50 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Feedback</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS CDN for modern and responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
-<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Submit Faculty Feedback</h1>
+<div class="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-xl border-t-4 border-blue-500">
+    <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center tracking-tight">
+        Comprehensive Faculty Feedback
+    </h1>
 
-    <form id="feedbackForm" class="space-y-4">
+    <form id="feedbackForm" class="space-y-6">
         <div>
-            <label for="faculty_name" class="block text-gray-700 text-sm font-bold mb-2">Faculty Name:</label>
+            <label for="faculty_name" class="block text-gray-700 text-lg font-semibold mb-2">Faculty Member:</label>
             <input type="text" id="faculty_name" name="faculty_name" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                   placeholder="e.g., Dr. Jane Doe"
+                   class="shadow-sm appearance-none border border-gray-300 rounded-md w-full py-2.5 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+        </div>
+
+        <!-- Question 1: Content Clarity -->
+        <div class="p-5 bg-blue-50 rounded-lg shadow-sm border border-blue-200">
+            <p class="block text-gray-800 text-base font-semibold mb-3">1. The faculty member presented course material clearly and effectively.</p>
+            <div class="flex flex-wrap gap-4 justify-around">
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q1_clarity" value="Strongly Agree" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500" required>
+                    <span class="ml-2 text-gray-700 group-hover:text-blue-700 font-medium">Strongly Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q1_clarity" value="Agree" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-blue-700 font-medium">Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q1_clarity" value="Neutral" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-blue-700 font-medium">Neutral</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q1_clarity" value="Disagree" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-blue-700 font-medium">Disagree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q1_clarity" value="Strongly Disagree" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-blue-700 font-medium">Strongly Disagree</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Question 2: Engagement -->
+        <div class="p-5 bg-green-50 rounded-lg shadow-sm border border-green-200">
+            <p class="block text-gray-800 text-base font-semibold mb-3">2. The faculty member fostered an engaging and interactive learning environment.</p>
+            <div class="flex flex-wrap gap-4 justify-around">
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q2_engagement" value="Strongly Agree" class="form-radio h-5 w-5 text-green-600 focus:ring-green-500" required>
+                    <span class="ml-2 text-gray-700 group-hover:text-green-700 font-medium">Strongly Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q2_engagement" value="Agree" class="form-radio h-5 w-5 text-green-600 focus:ring-green-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-green-700 font-medium">Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q2_engagement" value="Neutral" class="form-radio h-5 w-5 text-green-600 focus:ring-green-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-green-700 font-medium">Neutral</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q2_engagement" value="Disagree" class="form-radio h-5 w-5 text-green-600 focus:ring-green-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-green-700 font-medium">Disagree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q2_engagement" value="Strongly Disagree" class="form-radio h-5 w-5 text-green-600 focus:ring-green-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-green-700 font-medium">Strongly Disagree</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Question 3: Support/Availability -->
+        <div class="p-5 bg-purple-50 rounded-lg shadow-sm border border-purple-200">
+            <p class="block text-gray-800 text-base font-semibold mb-3">3. The faculty member was approachable and provided adequate support for student queries.</p>
+            <div class="flex flex-wrap gap-4 justify-around">
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q3_support" value="Strongly Agree" class="form-radio h-5 w-5 text-purple-600 focus:ring-purple-500" required>
+                    <span class="ml-2 text-gray-700 group-hover:text-purple-700 font-medium">Strongly Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q3_support" value="Agree" class="form-radio h-5 w-5 text-purple-600 focus:ring-purple-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-purple-700 font-medium">Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q3_support" value="Neutral" class="form-radio h-5 w-5 text-purple-600 focus:ring-purple-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-purple-700 font-medium">Neutral</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q3_support" value="Disagree" class="form-radio h-5 w-5 text-purple-600 focus:ring-purple-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-purple-700 font-medium">Disagree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q3_support" value="Strongly Disagree" class="form-radio h-5 w-5 text-purple-600 focus:ring-purple-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-purple-700 font-medium">Strongly Disagree</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Question 4: Fairness/Assessment -->
+        <div class="p-5 bg-yellow-50 rounded-lg shadow-sm border border-yellow-200">
+            <p class="block text-gray-800 text-base font-semibold mb-3">4. Assessments (e.g., exams, assignments) were fair and reflected the course content.</p>
+            <div class="flex flex-wrap gap-4 justify-around">
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q4_fairness" value="Strongly Agree" class="form-radio h-5 w-5 text-yellow-600 focus:ring-yellow-500" required>
+                    <span class="ml-2 text-gray-700 group-hover:text-yellow-700 font-medium">Strongly Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q4_fairness" value="Agree" class="form-radio h-5 w-5 text-yellow-600 focus:ring-yellow-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-yellow-700 font-medium">Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q4_fairness" value="Neutral" class="form-radio h-5 w-5 text-yellow-600 focus:ring-yellow-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-yellow-700 font-medium">Neutral</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q4_fairness" value="Disagree" class="form-radio h-5 w-5 text-yellow-600 focus:ring-yellow-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-yellow-700 font-medium">Disagree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q4_fairness" value="Strongly Disagree" class="form-radio h-5 w-5 text-yellow-600 focus:ring-yellow-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-yellow-700 font-medium">Strongly Disagree</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Question 5: Overall Impact -->
+        <div class="p-5 bg-red-50 rounded-lg shadow-sm border border-red-200">
+            <p class="block text-gray-800 text-base font-semibold mb-3">5. Overall, the faculty member positively impacted my learning experience.</p>
+            <div class="flex flex-wrap gap-4 justify-around">
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q5_overall" value="Strongly Agree" class="form-radio h-5 w-5 text-red-600 focus:ring-red-500" required>
+                    <span class="ml-2 text-gray-700 group-hover:text-red-700 font-medium">Strongly Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q5_overall" value="Agree" class="form-radio h-5 w-5 text-red-600 focus:ring-red-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-red-700 font-medium">Agree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q5_overall" value="Neutral" class="form-radio h-5 w-5 text-red-600 focus:ring-red-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-red-700 font-medium">Neutral</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q5_overall" value="Disagree" class="form-radio h-5 w-5 text-red-600 focus:ring-red-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-red-700 font-medium">Disagree</span>
+                </label>
+                <label class="inline-flex items-center group cursor-pointer">
+                    <input type="radio" name="q5_overall" value="Strongly Disagree" class="form-radio h-5 w-5 text-red-600 focus:ring-red-500">
+                    <span class="ml-2 text-gray-700 group-hover:text-red-700 font-medium">Strongly Disagree</span>
+                </label>
+            </div>
         </div>
 
         <div>
-            <label for="rating" class="block text-gray-700 text-sm font-bold mb-2">Rating (1-5):</label>
-            <input type="number" id="rating" name="rating" min="1" max="5" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <label for="comment" class="block text-gray-700 text-lg font-semibold mb-2">Additional Comments:</label>
+            <textarea id="comment" name="comment" rows="4" placeholder="Any further comments or suggestions..." required
+                      class="shadow-sm appearance-none border border-gray-300 rounded-md w-full py-2.5 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"></textarea>
         </div>
 
-        <div>
-            <label for="comment" class="block text-gray-700 text-sm font-bold mb-2">Comment:</label>
-            <textarea id="comment" name="comment" rows="4" required
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-        </div>
-        <!-- submitted_by field is removed as it's now derived from authentication -->
         <button type="submit"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Submit Feedback
         </button>
     </form>
 
-    <hr class="my-8 border-t border-gray-300">
+    <hr class="my-10 border-t-2 border-gray-200">
 
-    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Recent Feedback</h2>
-    <div id="feedbackList" class="space-y-4">
-        <p class="text-gray-500 text-center" id="loadingMessage">Loading feedback...</p>
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Recent Feedback Entries</h2>
+    <div id="feedbackList" class="space-y-6">
+        <p class="text-gray-500 text-center text-lg" id="loadingMessage">Loading feedback...</p>
     </div>
 </div>
 
 <!-- Custom Modal for Alerts -->
-<div id="customAlert" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-        <p id="alertMessage" class="text-lg mb-4"></p>
-        <button id="alertCloseButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+<div id="customAlert" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center transform scale-95 transition-all duration-300 ease-out">
+        <p id="alertMessage" class="text-lg mb-4 text-gray-800"></p>
+        <button id="alertCloseButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-200">
             OK
         </button>
     </div>
@@ -61,15 +194,20 @@
     // Ensure user is authenticated before proceeding
     requireAuth();
 
-    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; // <-- REPLACE THIS!
+    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; // <-- IMPORTANT: Confirm your backend URL!
 
     function showCustomAlert(message) {
         document.getElementById('alertMessage').textContent = message;
         document.getElementById('customAlert').classList.remove('hidden');
+        // Optional: Add a subtle animation class
+        document.querySelector('#customAlert > div').classList.add('scale-100');
+        document.querySelector('#customAlert > div').classList.remove('scale-95');
     }
 
     document.getElementById('alertCloseButton').addEventListener('click', () => {
         document.getElementById('customAlert').classList.add('hidden');
+        document.querySelector('#customAlert > div').classList.remove('scale-100');
+        document.querySelector('#customAlert > div').classList.add('scale-95');
     });
 
     async function fetchFeedback() {
@@ -77,12 +215,12 @@
         const loadingMessage = document.getElementById('loadingMessage');
         loadingMessage.classList.remove('hidden');
 
-        const token = getAuthToken(); // Get the JWT token
+        const token = getAuthToken();
 
         try {
             const response = await fetch(`${BACKEND_URL}/api/feedback`, {
                 headers: {
-                    'x-auth-token': token // Send the token in the header
+                    'x-auth-token': token
                 }
             });
             if (!response.ok) {
@@ -91,18 +229,25 @@
             }
             const feedbackEntries = await response.json();
 
-            feedbackList.innerHTML = '';
+            feedbackList.innerHTML = ''; // Clear previous entries
 
             if (feedbackEntries.length === 0) {
-                feedbackList.innerHTML = '<p class="text-gray-500 text-center">No feedback submitted yet.</p>';
+                feedbackList.innerHTML = '<p class="text-gray-500 text-center text-lg">No feedback submitted yet.</p>';
             } else {
                 feedbackEntries.forEach(entry => {
                     const feedbackCard = document.createElement('div');
-                    feedbackCard.className = 'bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200';
+                    feedbackCard.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition duration-200';
                     feedbackCard.innerHTML = `
-                        <p class="text-gray-900 text-lg font-semibold">${entry.faculty_name} - Rating: ${entry.rating}/5</p>
-                        <p class="text-gray-700 mt-2">${entry.comment}</p>
-                        <p class="text-gray-500 text-sm mt-2">Submitted by: ${entry.submitted_by || 'Anonymous'} on ${new Date(entry.submitted_at).toLocaleString()}</p>
+                        <p class="text-xl font-bold text-blue-700 mb-2">${entry.faculty_name}</p>
+                        <div class="space-y-1.5 text-gray-700 mb-4">
+                            <p><strong>1. Clarity:</strong> ${entry.q1_clarity}</p>
+                            <p><strong>2. Engagement:</strong> ${entry.q2_engagement}</p>
+                            <p><strong>3. Support:</strong> ${entry.q3_support}</p>
+                            <p><strong>4. Fairness:</strong> ${entry.q4_fairness}</p>
+                            <p><strong>5. Overall Impact:</strong> ${entry.q5_overall}</p>
+                        </div>
+                        <p class="text-gray-800 italic mb-3">"${entry.comment}"</p>
+                        <p class="text-gray-500 text-sm border-t pt-2 mt-2">Submitted by: <span class="font-medium">${entry.submitted_by || 'Anonymous'}</span> on ${new Date(entry.submitted_at).toLocaleString()}</p>
                     `;
                     feedbackList.appendChild(feedbackCard);
                 });
@@ -110,7 +255,7 @@
         } catch (error) {
             console.error("Error fetching feedback:", error);
             showCustomAlert(error.message || "Failed to load feedback. Please check your backend URL and server status.");
-            feedbackList.innerHTML = '<p class="text-red-500 text-center">Failed to load feedback.</p>';
+            feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg">Failed to load feedback. Please check your backend and try again.</p>';
         } finally {
             loadingMessage.classList.add('hidden');
         }
@@ -120,17 +265,34 @@
         e.preventDefault();
 
         const formData = new FormData(this);
-        const body = Object.fromEntries(formData.entries());
-        body.rating = parseInt(body.rating, 10);
+        const body = {};
 
-        const token = getAuthToken(); // Get the JWT token
+        // Collect all radio button values and other fields
+        body.faculty_name = formData.get('faculty_name');
+        body.q1_clarity = formData.get('q1_clarity');
+        body.q2_engagement = formData.get('q2_engagement');
+        body.q3_support = formData.get('q3_support');
+        body.q4_fairness = formData.get('q4_fairness');
+        body.q5_overall = formData.get('q5_overall');
+        body.comment = formData.get('comment');
+
+        // Client-side validation to ensure all radio buttons are selected
+        const questions = ['q1_clarity', 'q2_engagement', 'q3_support', 'q4_fairness', 'q5_overall'];
+        for (const q of questions) {
+            if (!body[q]) {
+                showCustomAlert("Please answer all 5 questions before submitting.");
+                return; // Stop submission
+            }
+        }
+
+        const token = getAuthToken();
 
         try {
             const res = await fetch(`${BACKEND_URL}/api/feedback`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "x-auth-token": token // Send the token in the header
+                    "x-auth-token": token
                 },
                 body: JSON.stringify(body),
             });
@@ -139,14 +301,16 @@
 
             if (res.ok) {
                 showCustomAlert(result.message || "Feedback submitted successfully!");
-                this.reset();
-                fetchFeedback();
+                this.reset(); // Clear the form
+                // Uncheck all radio buttons after submission
+                document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+                fetchFeedback(); // Refresh the list
             } else {
-                showCustomAlert(result.error || result.msg || "Failed to submit feedback.");
+                showCustomAlert(result.error || result.msg || "Failed to submit feedback. Please ensure all fields are filled.");
             }
         } catch (error) {
             console.error("Error submitting feedback:", error);
-            showCustomAlert("An error occurred. Please try again.");
+            showCustomAlert("An unexpected error occurred. Please check your network and try again.");
         }
     });
 

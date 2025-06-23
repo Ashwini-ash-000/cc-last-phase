@@ -97,7 +97,7 @@
 
     // Ensure user is authenticated before proceeding
     requireAuth();
-    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; //
+    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; // Your Render backend URL
 
     // --- Custom Alert System (Enhanced) ---
     function showCustomAlert(message, type = 'info') { // type: 'success', 'error', 'info'
@@ -157,7 +157,7 @@
 
         try {
             // *** IMPORTANT CHANGE HERE ***
-            // Fetch ONLY feedback submitted by the current user
+            // Fetch ONLY suggestions submitted by the current user
             const response = await fetch(`${BACKEND_URL}/api/suggestions/my`, {
                 headers: {
                     'x-auth-token': token // Send the token in the header

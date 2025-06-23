@@ -6,72 +6,113 @@
     <title>Faculty Feedback</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                            500: '#64748b',
+                        },
+                        primary: {
+                            900: '#1e3a8a',
+                            800: '#1e40af',
+                            700: '#1d4ed8',
+                            600: '#2563eb',
+                            500: '#3b82f6',
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(59, 130, 246, 0.5)',
+                        'glow-lg': '0 0 25px rgba(59, 130, 246, 0.7)'
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        /* Custom styles to apply Google Fonts */
+        /* Custom styles */
         body {
             font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(at 0% 0%, hsl(210, 80%, 98%) 0, transparent 50%),
-                              radial-gradient(at 100% 100%, hsl(240, 80%, 95%) 0, transparent 50%);
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-color: #0f172a;
+            color: #e2e8f0;
         }
         h1, h2 {
             font-family: 'Montserrat', sans-serif;
         }
 
-        /* Main Container Shadow and Border enhancements */
-        .main-container-glow {
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 8px rgba(96, 165, 250, 0.2); /* Deeper shadow + faint blue glow */
-        }
-        .main-container-glow:hover {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 10px rgba(59, 130, 246, 0.3); /* Even deeper shadow + brighter glow */
+        /* Glass morphism effect */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* Custom Radio Button Styling */
         .custom-radio-button {
             @apply w-5 h-5 rounded-full border-2 flex items-center justify-center transition duration-200 ease-in-out;
-            border-color: #93c5fd; /* Light blue-300 */
+            border-color: #3b82f6;
         }
 
         .custom-radio-button::after {
             content: '';
-            @apply block w-2.5 h-2.5 rounded-full bg-white transform scale-0 opacity-0 transition duration-200 ease-in-out;
+            @apply block w-2.5 h-2.5 rounded-full bg-primary-600 transform scale-0 opacity-0 transition duration-200 ease-in-out;
         }
 
         input[type="radio"]:checked + .custom-radio-button {
-            @apply bg-blue-600 border-blue-600; /* Fill color when checked */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Blue glow on checked */
+            @apply border-primary-500;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
         }
 
         input[type="radio"]:checked + .custom-radio-button::after {
-            @apply scale-100 opacity-100; /* Show inner dot when checked */
+            @apply scale-100 opacity-100;
         }
 
-        /* Specific styles for the alert modal backdrop blur */
+        /* Input field styling */
+        .input-field {
+            @apply bg-dark-800 border-dark-600 text-gray-200 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50;
+        }
+
+        /* Button hover effect */
+        .btn-hover-effect {
+            @apply transition-all duration-300 transform hover:scale-105 hover:shadow-glow-lg;
+        }
+
+        /* Feedback card hover effect */
+        .feedback-card {
+            @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-glow;
+        }
+
+        /* Modal backdrop */
         .modal-backdrop-blur {
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center py-12 px-4">
-<div class="max-w-4xl w-full bg-white p-10 lg:p-12 rounded-xl border-t-8 border-blue-600 main-container-glow transform transition-all duration-300 ease-in-out">
-    <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-8 text-center tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-purple-600 drop-shadow-md">
+<body class="min-h-screen flex items-center justify-center py-12 px-4">
+<div class="max-w-4xl w-full glass-card p-10 lg:p-12 rounded-2xl border-l-8 border-primary-500 shadow-xl transform transition-all duration-500">
+    <h1 class="text-4xl lg:text-5xl font-extrabold mb-8 text-center tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-cyan-400">
         Comprehensive Faculty Feedback
     </h1>
 
     <form id="feedbackForm" class="space-y-10">
         <div>
-            <label for="faculty_name" class="block text-gray-800 text-lg font-bold mb-2">Faculty Member:</label>
+            <label for="faculty_name" class="block text-gray-300 text-lg font-bold mb-2">Faculty Member:</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-7 w-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <svg class="h-7 w-7 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
                 <input type="text" id="faculty_name" name="faculty_name" required
                        placeholder="Enter faculty name here..."
-                       class="pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl w-full text-gray-900 leading-tight focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition duration-300 ease-in-out text-base font-medium placeholder-gray-400">
+                       class="input-field pl-12 pr-4 py-3 border-2 rounded-xl w-full leading-tight focus:outline-none transition duration-300 ease-in-out text-base font-medium">
             </div>
         </div>
 
@@ -79,35 +120,35 @@
         </div>
 
         <div>
-            <label for="comment" class="block text-gray-800 text-lg font-bold mb-2">Additional Comments:</label>
+            <label for="comment" class="block text-gray-300 text-lg font-bold mb-2">Additional Comments:</label>
             <div class="relative">
                 <div class="absolute top-3 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-7 w-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <svg class="h-7 w-7 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </div>
                 <textarea id="comment" name="comment" rows="5" placeholder="Share any further comments or suggestions..." required
-                          class="pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl w-full text-gray-900 leading-tight focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition duration-300 ease-in-out resize-y text-base font-medium placeholder-gray-400"></textarea>
+                          class="input-field pl-12 pr-4 py-3 border-2 rounded-xl w-full leading-tight focus:outline-none resize-y text-base font-medium"></textarea>
             </div>
         </div>
 
         <button type="submit" id="submitButton"
-                class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-extrabold py-4 px-6 rounded-xl shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-blue-500 text-lg tracking-wide uppercase">
+                class="w-full bg-gradient-to-r from-primary-600 to-cyan-600 text-white font-extrabold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 btn-hover-effect text-lg tracking-wide uppercase">
             Submit Feedback
         </button>
     </form>
 
-    <hr class="my-14 border-t-2 border-gray-200">
+    <hr class="my-14 border-t-2 border-gray-700">
 
-    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 drop-shadow-md">Your Recent Feedback Entries</h2>
+    <h2 class="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-primary-400 mb-8">Your Recent Feedback Entries</h2>
     <div id="feedbackList" class="space-y-8">
-        <p class="text-gray-500 text-center text-xl animate-pulse py-8" id="loadingMessage">Loading your feedback...</p>
+        <p class="text-gray-400 text-center text-xl animate-pulse py-8" id="loadingMessage">Loading your feedback...</p>
     </div>
 </div>
 
-<div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 ease-in-out opacity-0 modal-backdrop-blur">
-    <div class="bg-white p-8 rounded-xl shadow-3xl max-w-md w-full text-center transform scale-90 transition-all duration-300 ease-out border-t-8 border-blue-500">
+<div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 ease-in-out opacity-0 modal-backdrop-blur">
+    <div class="bg-dark-800 p-8 rounded-xl shadow-2xl max-w-md w-full text-center transform scale-90 transition-all duration-300 ease-out border-l-8 border-primary-500">
         <div id="alertIcon" class="text-5xl mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-full"></div>
-        <p id="alertMessage" class="text-2xl font-bold text-gray-800 mb-6 leading-relaxed"></p>
-        <button id="alertCloseButton" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-lg shadow-md focus:outline-none focus:ring-3 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 transform hover:scale-105">
+        <p id="alertMessage" class="text-2xl font-bold text-gray-100 mb-6 leading-relaxed"></p>
+        <button id="alertCloseButton" class="bg-gradient-to-r from-primary-600 to-cyan-600 hover:from-primary-700 hover:to-cyan-700 text-white font-bold py-3 px-8 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200 btn-hover-effect">
             Got It!
         </button>
     </div>
@@ -140,34 +181,32 @@
         questionsData.forEach((q, index) => {
             const questionDiv = document.createElement('div');
 
-            // Assign different gradient colors and a more vibrant border
+            // Assign different gradient colors
             const colors = [
-                { from: 'cyan-50', to: 'blue-100', border: 'blue-400' },
-                { from: 'emerald-50', to: 'green-100', border: 'green-400' },
-                { from: 'fuchsia-50', to: 'purple-100', border: 'purple-400' },
-                { from: 'orange-50', to: 'amber-100', border: 'orange-400' },
-                { from: 'rose-50', to: 'red-100', border: 'red-400' }
+                { bg: 'from-blue-900/50 to-blue-800/50', border: 'border-blue-500' },
+                { bg: 'from-emerald-900/50 to-emerald-800/50', border: 'border-emerald-500' },
+                { bg: 'from-purple-900/50 to-purple-800/50', border: 'border-purple-500' },
+                { bg: 'from-amber-900/50 to-amber-800/50', border: 'border-amber-500' },
+                { bg: 'from-rose-900/50 to-rose-800/50', border: 'border-rose-500' }
             ];
             const color = colors[index % colors.length]; // Cycle through colors
 
-            questionDiv.className = `p-7 bg-gradient-to-br from-${color.from} to-${color.to} rounded-xl shadow-lg border-l-6 border-${color.border} hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1`;
+            questionDiv.className = `p-7 bg-gradient-to-br ${color.bg} rounded-xl shadow-lg ${color.border} border-l-4 hover:shadow-glow transition duration-300 ease-in-out`;
 
             let radioButtonsHtml = '';
             ratingOptions.forEach(option => {
-                // Use a hidden radio input and a styled span for custom radio buttons
-                // The 'peer' class on the input allows styling of the next sibling based on checked state
                 radioButtonsHtml += `
-                    <label class="inline-flex items-center group cursor-pointer p-2 rounded-lg hover:bg-${color.border}/20 transition duration-200">
+                    <label class="inline-flex items-center group cursor-pointer p-2 rounded-lg hover:bg-white/5 transition duration-200">
                         <input type="radio" name="${q.name}" value="${option}"
                                class="hidden peer" required>
                         <span class="custom-radio-button transition duration-200"></span>
-                        <span class="ml-2 text-gray-800 group-hover:text-${color.border}-700 font-medium transition duration-200 peer-checked:text-${color.border}-800 peer-checked:font-semibold text-base">${option}</span>
+                        <span class="ml-2 text-gray-300 group-hover:text-white font-medium transition duration-200 peer-checked:text-primary-300 peer-checked:font-semibold text-base">${option}</span>
                     </label>
                 `;
             });
 
             questionDiv.innerHTML = `
-                <p class="block text-gray-900 text-lg font-bold mb-4 leading-relaxed">${q.text}</p>
+                <p class="block text-gray-100 text-lg font-bold mb-4 leading-relaxed">${q.text}</p>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-4 justify-items-center sm:justify-items-start">
                     ${radioButtonsHtml}
                 </div>
@@ -175,7 +214,6 @@
             container.appendChild(questionDiv);
         });
     }
-
 
     // --- Custom Alert System (Enhanced) ---
     function showCustomAlert(message, type = 'info') { // type: 'success', 'error', 'info'
@@ -188,13 +226,13 @@
 
         // Apply type-specific styling
         if (type === 'success') {
-            alertIcon.classList.add('bg-green-100', 'text-green-600');
+            alertIcon.classList.add('bg-emerald-900/30', 'text-emerald-400');
             alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
         } else if (type === 'error') {
-            alertIcon.classList.add('bg-red-100', 'text-red-600');
+            alertIcon.classList.add('bg-rose-900/30', 'text-rose-400');
             alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.174 3.35 1.9 3.35h13.713c1.726 0 2.766-1.85 1.9-3.35L13.73 7.82c-.774-1.342-2.694-1.342-3.468 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>';
         } else { // 'info' or default
-            alertIcon.classList.add('bg-blue-100', 'text-blue-600');
+            alertIcon.classList.add('bg-primary-900/30', 'text-primary-400');
             alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>';
         }
 
@@ -218,7 +256,6 @@
     });
     // --- End Custom Alert System ---
 
-
     async function fetchFeedback() {
         const feedbackList = document.getElementById('feedbackList');
         const loadingMessage = document.getElementById('loadingMessage');
@@ -229,13 +266,13 @@
         if (!token) {
             showCustomAlert("Authentication token not found. Please log in.", 'error');
             loadingMessage.classList.add('hidden');
-            feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Please log in to view your feedback.</p>';
+            feedbackList.innerHTML = '<p class="text-rose-500 text-center text-lg py-8">Please log in to view your feedback.</p>';
             return;
         }
 
         try {
             // Fetch ONLY feedback submitted by the current user
-            const response = await fetch(`${BACKEND_URL}/api/feedback/my`, { // CRITICAL: This is the endpoint for fetching user-specific feedback
+            const response = await fetch(`${BACKEND_URL}/api/feedback/my`, {
                 headers: {
                     'x-auth-token': token
                 }
@@ -249,23 +286,22 @@
             loadingMessage.classList.add('hidden'); // Hide loading message
 
             if (feedbackEntries.length === 0) {
-                feedbackList.innerHTML = '<p class="text-gray-600 text-center text-xl py-8 font-medium">You have not submitted any feedback yet. Be the first!</p>';
+                feedbackList.innerHTML = '<p class="text-gray-400 text-center text-xl py-8 font-medium">You have not submitted any feedback yet. Be the first!</p>';
             } else {
                 feedbackEntries.forEach(entry => {
                     const feedbackCard = document.createElement('div');
-                    // Enhanced feedback card styling
-                    feedbackCard.className = 'bg-white p-7 rounded-xl shadow-lg border-l-6 border-blue-500 hover:shadow-xl transition duration-300 transform hover:-translate-y-1';
+                    feedbackCard.className = 'feedback-card bg-dark-800 p-7 rounded-xl shadow-lg border-l-4 border-primary-500 hover:shadow-glow transition duration-300';
                     feedbackCard.innerHTML = `
-                        <p class="text-2xl font-extrabold text-blue-700 mb-3">${entry.faculty_name}</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-2 text-gray-700 text-base mb-4">
-                            <p><strong>Clarity:</strong> <span class="font-semibold text-indigo-700">${entry.q1_clarity}</span></p>
-                            <p><strong>Engagement:</strong> <span class="font-semibold text-indigo-700">${entry.q2_engagement}</span></p>
-                            <p><strong>Support:</strong> <span class="font-semibold text-indigo-700">${entry.q3_support}</span></p>
-                            <p><strong>Fairness:</strong> <span class="font-semibold text-indigo-700">${entry.q4_fairness}</span></p>
-                            <p><strong>Overall:</strong> <span class="font-semibold text-indigo-700">${entry.q5_overall}</span></p>
+                        <p class="text-2xl font-extrabold text-primary-400 mb-3">${entry.faculty_name}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-2 text-gray-300 text-base mb-4">
+                            <p><strong class="text-gray-400">Clarity:</strong> <span class="font-semibold text-primary-300">${entry.q1_clarity}</span></p>
+                            <p><strong class="text-gray-400">Engagement:</strong> <span class="font-semibold text-primary-300">${entry.q2_engagement}</span></p>
+                            <p><strong class="text-gray-400">Support:</strong> <span class="font-semibold text-primary-300">${entry.q3_support}</span></p>
+                            <p><strong class="text-gray-400">Fairness:</strong> <span class="font-semibold text-primary-300">${entry.q4_fairness}</span></p>
+                            <p><strong class="text-gray-400">Overall:</strong> <span class="font-semibold text-primary-300">${entry.q5_overall}</span></p>
                         </div>
-                        ${entry.comment ? `<div class="bg-blue-50 p-4 rounded-lg mt-4 border-l-4 border-blue-300">
-                            <p class="text-gray-800 italic leading-relaxed text-sm">"${entry.comment}"</p>
+                        ${entry.comment ? `<div class="bg-dark-700/50 p-4 rounded-lg mt-4 border-l-4 border-primary-500/50">
+                            <p class="text-gray-200 italic leading-relaxed text-sm">"${entry.comment}"</p>
                         </div>` : ''}
                         <p class="text-gray-500 text-xs mt-5 text-right font-light">
                             Submitted on ${new Date(entry.submitted_at).toLocaleString()}
@@ -276,9 +312,9 @@
             }
         } catch (error) {
             console.error("Error fetching feedback:", error);
-            loadingMessage.classList.add('hidden'); // Hide loading message even on error
+            loadingMessage.classList.add('hidden');
             showCustomAlert(error.message || "Failed to load your feedback. Please check your network and server status.", 'error');
-            feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Failed to load your feedback. Please check your backend and try again.</p>';
+            feedbackList.innerHTML = '<p class="text-rose-500 text-center text-lg py-8">Failed to load your feedback. Please check your backend and try again.</p>';
         }
     }
 
@@ -286,9 +322,9 @@
         e.preventDefault();
 
         const submitButton = document.getElementById('submitButton');
-        submitButton.disabled = true; // Disable button
-        submitButton.textContent = 'Submitting...'; // Change text
-        submitButton.classList.add('opacity-70', 'cursor-not-allowed'); // Add disabled style
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting...';
+        submitButton.classList.add('opacity-70', 'cursor-not-allowed');
 
         const formData = new FormData(this);
         const body = {};
@@ -302,7 +338,7 @@
         body.q5_overall = formData.get('q5_overall');
         body.comment = formData.get('comment');
 
-        // Client-side validation to ensure all required fields are filled
+        // Client-side validation
         if (!body.faculty_name.trim()) {
             showCustomAlert("Please enter the Faculty Member's name.", 'error');
             submitButton.disabled = false;
@@ -315,10 +351,10 @@
         for (const q of questions) {
             if (!body[q]) {
                 showCustomAlert("Please answer all 5 questions before submitting.", 'error');
-                submitButton.disabled = false; // Re-enable button
-                submitButton.textContent = 'Submit Feedback'; // Reset text
-                submitButton.classList.remove('opacity-70', 'cursor-not-allowed'); // Remove disabled style
-                return; // Stop submission
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Feedback';
+                submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+                return;
             }
         }
 
@@ -330,7 +366,6 @@
              return;
         }
 
-
         const token = getAuthToken();
         if (!token) {
             showCustomAlert("You must be logged in to submit feedback.", 'error');
@@ -341,7 +376,7 @@
         }
 
         try {
-            const res = await fetch(`${BACKEND_URL}/api/feedback`, { // POST still goes to /api/feedback
+            const res = await fetch(`${BACKEND_URL}/api/feedback`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -354,10 +389,9 @@
 
             if (res.ok) {
                 showCustomAlert(result.message || "Feedback submitted successfully!", 'success');
-                this.reset(); // Clear the form
-                // Uncheck all radio buttons after submission
+                this.reset();
                 document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-                fetchFeedback(); // Refresh the list to show new feedback
+                fetchFeedback();
             } else {
                 showCustomAlert(result.error || result.msg || "Failed to submit feedback. Please ensure all fields are filled.", 'error');
             }
@@ -365,14 +399,14 @@
             console.error("Error submitting feedback:", error);
             showCustomAlert("An unexpected error occurred. Please check your network and try again.", 'error');
         } finally {
-            submitButton.disabled = false; // Re-enable button
-            submitButton.textContent = 'Submit Feedback'; // Reset text
-            submitButton.classList.remove('opacity-70', 'cursor-not-allowed'); // Remove disabled style
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Feedback';
+            submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
         }
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-        generateQuestionBlocks(); // Generate questions on DOMContentLoaded
+        generateQuestionBlocks();
         fetchFeedback();
     });
 </script>

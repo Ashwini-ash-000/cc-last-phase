@@ -4,46 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Suggestions</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom styles to apply Google Fonts */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(at 0% 0%, hsl(210, 80%, 98%) 0, transparent 50%),
+                              radial-gradient(at 100% 100%, hsl(240, 80%, 95%) 0, transparent 50%);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        h1, h2 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Main Container Shadow and Border enhancements */
+        .main-container-glow {
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 8px rgba(96, 165, 250, 0.2); /* Deeper shadow + faint blue glow */
+        }
+        .main-container-glow:hover {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 10px rgba(59, 130, 246, 0.3); /* Even deeper shadow + brighter glow */
+        }
+
+        /* Specific styles for the alert modal backdrop blur */
+        .modal-backdrop-blur {
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+    </style>
 </head>
 <body class="bg-gray-100 p-4">
-<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Submit a Suggestion</h1>
+<div class="max-w-4xl mx-auto bg-white p-10 rounded-xl shadow-2xl border-t-8 border-blue-600 main-container-glow transform transition-all duration-300 ease-in-out">
+    <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-8 text-center tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-green-700 to-teal-600 drop-shadow-md">
+        Submit a Suggestion
+    </h1>
 
-    <form id="suggestionForm" class="space-y-4">
+    <form id="suggestionForm" class="space-y-8">
         <div>
-            <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Suggestion Title:</label>
-            <input type="text" id="title" name="title" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <label for="title" class="block text-gray-800 text-lg font-bold mb-2">Suggestion Title:</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-7 w-7 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 12h14M5 16h14"></path></svg>
+                </div>
+                <input type="text" id="title" name="title" required
+                       placeholder="A concise summary of your suggestion"
+                       class="pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl w-full text-gray-900 leading-tight focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-200 transition duration-300 ease-in-out text-base font-medium placeholder-gray-400">
+            </div>
         </div>
 
         <div>
-            <label for="suggestion" class="block text-gray-700 text-sm font-bold mb-2">Suggestion Details:</label>
-            <textarea id="suggestion" name="suggestion" rows="6" required
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            <label for="suggestion" class="block text-gray-800 text-lg font-bold mb-2">Suggestion Details:</label>
+            <div class="relative">
+                <div class="absolute top-3 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-7 w-7 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <textarea id="suggestion" name="suggestion" rows="6" required
+                          placeholder="Describe your suggestion in detail..."
+                          class="pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl w-full text-gray-900 leading-tight focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-200 transition duration-300 ease-in-out resize-y text-base font-medium placeholder-gray-400"></textarea>
+            </div>
         </div>
-        <!-- submitted_by field is removed as it's now derived from authentication -->
-        <button type="submit"
-                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+
+        <button type="submit" id="submitButton"
+                class="w-full bg-gradient-to-r from-green-600 to-teal-700 text-white font-extrabold py-4 px-6 rounded-xl shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 hover:from-green-700 hover:to-teal-800 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-green-500 text-lg tracking-wide uppercase">
             Submit Suggestion
         </button>
     </form>
 
-    <hr class="my-8 border-t border-gray-300">
+    <hr class="my-14 border-t-2 border-gray-200">
 
-    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Recent Suggestions</h2>
-    <div id="suggestionList" class="space-y-4">
-        <p class="text-gray-500 text-center" id="loadingMessage">Loading suggestions...</p>
+    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 drop-shadow-md">Your Recent Suggestions</h2>
+    <div id="suggestionList" class="space-y-8">
+        <p class="text-gray-500 text-center text-xl animate-pulse py-8" id="loadingMessage">Loading your suggestions...</p>
     </div>
 </div>
 
-<!-- Custom Modal for Alerts -->
-<div id="customAlert" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-        <p id="alertMessage" class="text-lg mb-4"></p>
-        <button id="alertCloseButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            OK
+<div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 ease-in-out opacity-0 modal-backdrop-blur">
+    <div class="bg-white p-8 rounded-xl shadow-3xl max-w-md w-full text-center transform scale-90 transition-all duration-300 ease-out border-t-8 border-green-500">
+        <div id="alertIcon" class="text-5xl mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-full"></div>
+        <p id="alertMessage" class="text-2xl font-bold text-gray-800 mb-6 leading-relaxed"></p>
+        <button id="alertCloseButton" class="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-md focus:outline-none focus:ring-3 focus:ring-offset-2 focus:ring-green-500 transition duration-200 transform hover:scale-105">
+            Got It!
         </button>
     </div>
 </div>
@@ -54,26 +97,68 @@
 
     // Ensure user is authenticated before proceeding
     requireAuth();
-    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com";
+    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; //
 
-    function showCustomAlert(message) {
-        document.getElementById('alertMessage').textContent = message;
-        document.getElementById('customAlert').classList.remove('hidden');
+    // --- Custom Alert System (Enhanced) ---
+    function showCustomAlert(message, type = 'info') { // type: 'success', 'error', 'info'
+        const customAlert = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertIcon = document.getElementById('alertIcon');
+
+        // Reset classes
+        alertIcon.className = 'text-5xl mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-full';
+
+        // Apply type-specific styling
+        if (type === 'success') {
+            alertIcon.classList.add('bg-green-100', 'text-green-600');
+            alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+        } else if (type === 'error') {
+            alertIcon.classList.add('bg-red-100', 'text-red-600');
+            alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.174 3.35 1.9 3.35h13.713c1.726 0 2.766-1.85 1.9-3.35L13.73 7.82c-.774-1.342-2.694-1.342-3.468 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>';
+        } else { // 'info' or default
+            alertIcon.classList.add('bg-blue-100', 'text-blue-600');
+            alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>';
+        }
+
+        alertMessage.textContent = message;
+        customAlert.classList.remove('hidden');
+        setTimeout(() => {
+            customAlert.classList.remove('opacity-0');
+            customAlert.querySelector('div').classList.remove('scale-90');
+            customAlert.querySelector('div').classList.add('scale-100');
+        }, 10); // Small delay for transition to apply
     }
 
     document.getElementById('alertCloseButton').addEventListener('click', () => {
-        document.getElementById('customAlert').classList.add('hidden');
+        const customAlert = document.getElementById('customAlert');
+        customAlert.classList.add('opacity-0');
+        customAlert.querySelector('div').classList.add('scale-90');
+        customAlert.querySelector('div').classList.remove('scale-100');
+        setTimeout(() => {
+            customAlert.classList.add('hidden');
+        }, 300); // Match transition duration
     });
+    // --- End Custom Alert System ---
 
     async function fetchSuggestions() {
         const suggestionList = document.getElementById('suggestionList');
         const loadingMessage = document.getElementById('loadingMessage');
+        suggestionList.innerHTML = ''; // Clear previous entries
         loadingMessage.classList.remove('hidden');
 
         const token = getAuthToken(); // Get the JWT token
 
+        if (!token) {
+            showCustomAlert("Authentication token not found. Please log in.", 'error');
+            loadingMessage.classList.add('hidden');
+            suggestionList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Please log in to view your suggestions.</p>';
+            return;
+        }
+
         try {
-            const response = await fetch(`${BACKEND_URL}/api/suggestions`, {
+            // *** IMPORTANT CHANGE HERE ***
+            // Fetch ONLY feedback submitted by the current user
+            const response = await fetch(`${BACKEND_URL}/api/suggestions/my`, {
                 headers: {
                     'x-auth-token': token // Send the token in the header
                 }
@@ -84,42 +169,63 @@
             }
             const suggestionEntries = await response.json();
 
-            suggestionList.innerHTML = '';
+            loadingMessage.classList.add('hidden');
 
             if (suggestionEntries.length === 0) {
-                suggestionList.innerHTML = '<p class="text-gray-500 text-center">No suggestions submitted yet.</p>';
+                suggestionList.innerHTML = '<p class="text-gray-600 text-center text-xl py-8 font-medium">You have not submitted any suggestions yet. Be the first!</p>';
             } else {
                 suggestionEntries.forEach(entry => {
                     const suggestionCard = document.createElement('div');
-                    suggestionCard.className = 'bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200';
+                    // Enhanced suggestion card styling
+                    suggestionCard.className = 'bg-white p-7 rounded-xl shadow-lg border-l-6 border-green-500 hover:shadow-xl transition duration-300 transform hover:-translate-y-1';
                     suggestionCard.innerHTML = `
-                        <p class="text-gray-900 text-lg font-semibold">Title: ${entry.title}</p>
-                        <p class="text-gray-700 mt-2">${entry.suggestion}</p>
-                        <p class="text-gray-500 text-sm mt-2">Status: <span class="font-medium ${entry.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}">${entry.status}</span></p>
-                        <p class="text-gray-500 text-sm mt-1">Submitted by: ${entry.submitted_by || 'Anonymous'} on ${new Date(entry.submitted_at).toLocaleString()}</p>
+                        <p class="text-2xl font-extrabold text-teal-700 mb-3">Title: ${entry.title}</p>
+                        <p class="text-gray-800 leading-relaxed text-base">${entry.suggestion}</p>
+                        <p class="text-gray-600 text-sm mt-3">Status: <span class="font-semibold ${entry.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}">${entry.status}</span></p>
+                        <p class="text-gray-500 text-xs mt-2 text-right font-light">Submitted by: ${entry.submitted_by || 'Anonymous'} on ${new Date(entry.submitted_at).toLocaleString()}</p>
                     `;
                     suggestionList.appendChild(suggestionCard);
                 });
             }
         } catch (error) {
             console.error("Error fetching suggestions:", error);
-            showCustomAlert(error.message || "Failed to load suggestions. Please check your backend URL and server status.");
-            suggestionList.innerHTML = '<p class="text-red-500 text-center">Failed to load suggestions.</p>';
-        } finally {
             loadingMessage.classList.add('hidden');
+            showCustomAlert(error.message || "Failed to load your suggestions. Please check your network and server status.", 'error');
+            suggestionList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Failed to load your suggestions. Please check your backend and try again.</p>';
         }
     }
 
     document.getElementById('suggestionForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
+        const submitButton = document.getElementById('submitButton');
+        submitButton.disabled = true; // Disable button
+        submitButton.textContent = 'Submitting...'; // Change text
+        submitButton.classList.add('opacity-70', 'cursor-not-allowed'); // Add disabled style
+
         const formData = new FormData(this);
         const body = Object.fromEntries(formData.entries());
 
+        // Client-side validation to ensure all required fields are filled and not just whitespace
+        if (!body.title.trim() || !body.suggestion.trim()) {
+            showCustomAlert("Please enter both title and suggestion details.", 'error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Suggestion';
+            submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+            return;
+        }
+
         const token = getAuthToken(); // Get the JWT token
+        if (!token) {
+            showCustomAlert("You must be logged in to submit a suggestion.", 'error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Suggestion';
+            submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+            return;
+        }
 
         try {
-            const res = await fetch(`${BACKEND_URL}/api/suggestions`, {
+            const res = await fetch(`${BACKEND_URL}/api/suggestions`, { // POST still goes to /api/suggestions
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -131,15 +237,19 @@
             const result = await res.json();
 
             if (res.ok) {
-                showCustomAlert(result.message || "Suggestion submitted successfully!");
-                this.reset();
-                fetchSuggestions();
+                showCustomAlert(result.message || "Suggestion submitted successfully!", 'success');
+                this.reset(); // Clear the form
+                fetchSuggestions(); // Refresh the list to show the newly submitted suggestion
             } else {
-                showCustomAlert(result.error || result.msg || "Failed to submit suggestion.");
+                showCustomAlert(result.error || result.msg || "Failed to submit suggestion.", 'error');
             }
         } catch (error) {
             console.error("Error submitting suggestion:", error);
-            showCustomAlert("An error occurred. Please try again.");
+            showCustomAlert("An unexpected error occurred. Please check your network and try again.", 'error');
+        } finally {
+            submitButton.disabled = false; // Re-enable button
+            submitButton.textContent = 'Submit Suggestion'; // Reset text
+            submitButton.classList.remove('opacity-70', 'cursor-not-allowed'); // Remove disabled style
         }
     });
 

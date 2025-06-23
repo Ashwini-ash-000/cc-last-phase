@@ -4,65 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Feedback</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        /* Custom styles for font-family and potentially more specific overrides */
+        /* Custom styles to apply Google Fonts */
         body {
             font-family: 'Inter', sans-serif;
         }
         h1, h2 {
             font-family: 'Montserrat', sans-serif;
         }
-        /* Custom radio button styling (Tailwind's form-radio is good, but for more custom look) */
-        /* You might not need these if Tailwind's form-radio is sufficient */
-        .custom-radio-input {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            width: 1.25rem; /* h-5 */
-            height: 1.25rem; /* w-5 */
-            border-radius: 50%;
-            border: 2px solid #D1D5DB; /* gray-300 */
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s ease-in-out;
-            position: relative;
-        }
-        .custom-radio-input:checked {
-            border-color: #3B82F6; /* blue-500 */
-            background-color: #3B82F6; /* blue-500 */
-        }
-        .custom-radio-input:checked::before {
-            content: '';
-            display: block;
-            width: 0.5rem; /* 2.5 * 0.4 = 1rem, so 0.5rem is smaller dot */
-            height: 0.5rem;
-            background-color: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .custom-radio-input:focus {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4); /* blue-500 with opacity */
-        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center py-10 px-4">
-<div class="max-w-4xl w-full bg-white p-10 rounded-xl shadow-2xl border-t-8 border-blue-600">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center tracking-tight leading-tight">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center py-12 px-4">
+<div class="max-w-4xl w-full bg-white p-10 lg:p-12 rounded-xl shadow-2xl border-t-8 border-blue-600 transform transition-all duration-300 ease-in-out hover:shadow-3xl">
+    <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-8 text-center tracking-tight leading-tight">
         Comprehensive Faculty Feedback
     </h1>
 
     <form id="feedbackForm" class="space-y-8">
         <div>
             <label for="faculty_name" class="block text-gray-800 text-lg font-semibold mb-2">Faculty Member:</label>
-            <input type="text" id="faculty_name" name="faculty_name" required
-                   placeholder="e.g., Dr. Jane Doe"
-                   class="shadow-sm border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-500 transition duration-300 ease-in-out text-base">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                <input type="text" id="faculty_name" name="faculty_name" required
+                       placeholder="e.g., Dr. Jane Doe"
+                       class="pl-12 shadow-sm border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-500 transition duration-300 ease-in-out text-base">
+            </div>
         </div>
 
         <div id="questions-container" class="space-y-6">
@@ -70,8 +41,13 @@
 
         <div>
             <label for="comment" class="block text-gray-800 text-lg font-semibold mb-2">Additional Comments:</label>
-            <textarea id="comment" name="comment" rows="5" placeholder="Share any further comments or suggestions..." required
-                      class="shadow-sm border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-500 transition duration-300 ease-in-out resize-y text-base"></textarea>
+            <div class="relative">
+                <div class="absolute top-3 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <textarea id="comment" name="comment" rows="5" placeholder="Share any further comments or suggestions..." required
+                          class="pl-12 shadow-sm border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-500 transition duration-300 ease-in-out resize-y text-base"></textarea>
+            </div>
         </div>
 
         <button type="submit" id="submitButton"
@@ -82,9 +58,9 @@
 
     <hr class="my-12 border-t-2 border-gray-200">
 
-    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Recent Feedback Entries</h2>
+    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Your Recent Feedback Entries</h2>
     <div id="feedbackList" class="space-y-6">
-        <p class="text-gray-500 text-center text-xl animate-pulse" id="loadingMessage">Loading feedback...</p>
+        <p class="text-gray-500 text-center text-xl animate-pulse py-8" id="loadingMessage">Loading your feedback...</p>
     </div>
 </div>
 
@@ -98,7 +74,6 @@
     </div>
 </div>
 
-
 <script type="module">
     // Import authentication utilities
     import { requireAuth, getAuthToken } from './auth.js';
@@ -109,11 +84,11 @@
     const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; // <-- IMPORTANT: Confirm your backend URL!
 
     const questionsData = [
-        { name: "q1_clarity", text: "1. The faculty member presented course material clearly and effectively." },
-        { name: "q2_engagement", text: "2. The faculty member fostered an engaging and interactive learning environment." },
-        { name: "q3_support", text: "3. The faculty member was approachable and provided adequate support for student queries." },
-        { name: "q4_fairness", text: "4. Assessments (e.g., exams, assignments) were fair and reflected the course content." },
-        { name: "q5_overall", text: "5. Overall, the faculty member positively impacted my learning experience." }
+        { name: "q1_clarity", text: "1. The faculty member's explanations and instructional methods helped me grasp complex topics effectively." },
+        { name: "q2_engagement", text: "2. The faculty member actively encouraged student participation and facilitated meaningful discussions." },
+        { name: "q3_support", text: "3. The faculty member provided constructive and timely feedback that aided my learning." },
+        { name: "q4_fairness", text: "4. The course content and activities were relevant and prepared me for real-world applications/further study." },
+        { name: "q5_overall", text: "5. The faculty member demonstrated professionalism and respect for all students." }
     ];
 
     const ratingOptions = ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"];
@@ -125,8 +100,8 @@
 
         questionsData.forEach(q => {
             const questionDiv = document.createElement('div');
-            // Consistent styling for all question blocks
-            questionDiv.className = 'p-6 bg-gray-50 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-200';
+            // Consistent styling for all question blocks with hover effect
+            questionDiv.className = 'p-6 bg-gray-50 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-200 transform hover:-translate-y-0.5';
 
             let radioButtonsHtml = '';
             ratingOptions.forEach(option => {
@@ -149,7 +124,6 @@
         });
     }
 
-
     // --- Custom Alert System (Enhanced) ---
     function showCustomAlert(message, type = 'info') { // type: 'success', 'error', 'info'
         const customAlert = document.getElementById('customAlert');
@@ -159,7 +133,7 @@
         // Reset classes
         alertIcon.className = 'text-5xl mb-4 mx-auto w-16 h-16 flex items-center justify-center rounded-full';
 
-        // Apply type-specific styling
+        // Apply type-specific styling and icon
         if (type === 'success') {
             alertIcon.classList.add('bg-green-100', 'text-green-600');
             alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
@@ -191,7 +165,6 @@
     });
     // --- End Custom Alert System ---
 
-
     async function fetchFeedback() {
         const feedbackList = document.getElementById('feedbackList');
         const loadingMessage = document.getElementById('loadingMessage');
@@ -199,9 +172,16 @@
         loadingMessage.classList.remove('hidden'); // Show loading message
 
         const token = getAuthToken();
+        if (!token) {
+            showCustomAlert("Authentication token not found. Please log in.", 'error');
+            loadingMessage.classList.add('hidden');
+            feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Please log in to view your feedback.</p>';
+            return;
+        }
 
         try {
-            const response = await fetch(`${BACKEND_URL}/api/feedback`, {
+            // Fetch ONLY feedback submitted by the current user
+            const response = await fetch(`${BACKEND_URL}/api/feedback/my`, { // CRITICAL CHANGE: added /my
                 headers: {
                     'x-auth-token': token
                 }
@@ -215,11 +195,12 @@
             loadingMessage.classList.add('hidden'); // Hide loading message
 
             if (feedbackEntries.length === 0) {
-                feedbackList.innerHTML = '<p class="text-gray-600 text-center text-xl py-8">No feedback submitted yet.</p>';
+                feedbackList.innerHTML = '<p class="text-gray-600 text-center text-xl py-8">You have not submitted any feedback yet.</p>';
             } else {
                 feedbackEntries.forEach(entry => {
                     const feedbackCard = document.createElement('div');
-                    feedbackCard.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition duration-200';
+                    // Added hover transform for feedback cards
+                    feedbackCard.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition duration-200 transform hover:-translate-y-0.5';
                     feedbackCard.innerHTML = `
                         <p class="text-2xl font-bold text-blue-700 mb-2">${entry.faculty_name}</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 text-gray-700 text-base mb-4">
@@ -230,8 +211,8 @@
                             <p><strong>Overall:</strong> <span class="font-medium">${entry.q5_overall}</span></p>
                         </div>
                         ${entry.comment ? `<p class="text-gray-800 italic mb-4 border-l-4 border-blue-200 pl-3">"${entry.comment}"</p>` : ''}
-                        <p class="text-gray-500 text-sm border-t border-gray-100 pt-3 mt-3">
-                            Submitted by: <span class="font-medium">${entry.submitted_by || 'Anonymous'}</span> on ${new Date(entry.submitted_at).toLocaleString()}
+                        <p class="text-gray-500 text-xs mt-3 text-right">
+                            Submitted on ${new Date(entry.submitted_at).toLocaleString()}
                         </p>
                     `;
                     feedbackList.appendChild(feedbackCard);
@@ -240,8 +221,8 @@
         } catch (error) {
             console.error("Error fetching feedback:", error);
             loadingMessage.classList.add('hidden'); // Hide loading message even on error
-            showCustomAlert(error.message || "Failed to load feedback. Please check your backend URL and server status.", 'error');
-            feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Failed to load feedback. Please check your backend and try again.</p>';
+            showCustomAlert(error.message || "Failed to load your feedback. Please check your network and server status.", 'error');
+            feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Failed to load your feedback. Please check your backend and try again.</p>';
         }
     }
 
@@ -265,7 +246,15 @@
         body.q5_overall = formData.get('q5_overall');
         body.comment = formData.get('comment');
 
-        // Client-side validation to ensure all radio buttons are selected
+        // Client-side validation to ensure all required fields are filled
+        if (!body.faculty_name.trim()) {
+            showCustomAlert("Please enter the Faculty Member's name.", 'error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Feedback';
+            submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+            return;
+        }
+
         const questions = ['q1_clarity', 'q2_engagement', 'q3_support', 'q4_fairness', 'q5_overall'];
         for (const q of questions) {
             if (!body[q]) {
@@ -277,10 +266,28 @@
             }
         }
 
+        // The comment field is marked as `required` in HTML. If you intend for it to be optional, remove the `required` attribute.
+        // If it should remain required, this validation is good:
+        if (!body.comment.trim()) {
+             showCustomAlert("Please provide additional comments.", 'error');
+             submitButton.disabled = false;
+             submitButton.textContent = 'Submit Feedback';
+             submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+             return;
+        }
+
+
         const token = getAuthToken();
+        if (!token) {
+            showCustomAlert("You must be logged in to submit feedback.", 'error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Feedback';
+            submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+            return;
+        }
 
         try {
-            const res = await fetch(`${BACKEND_URL}/api/feedback`, {
+            const res = await fetch(`${BACKEND_URL}/api/feedback`, { // POST still goes to /api/feedback
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -296,7 +303,7 @@
                 this.reset(); // Clear the form
                 // Uncheck all radio buttons after submission
                 document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-                fetchFeedback(); // Refresh the list
+                fetchFeedback(); // Refresh the list to show new feedback
             } else {
                 showCustomAlert(result.error || result.msg || "Failed to submit feedback. Please ensure all fields are filled.", 'error');
             }

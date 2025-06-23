@@ -23,7 +23,17 @@ const auth = (req, res, next) => {
     next(); // Pass control to the next middleware/route handler
   } catch (err) {
     // If token verification fails (e.g., token is invalid or expired)
-    res.status(401).json({ msg: "Token is not valid" }); // 401 Unauthorized
+    // Log specific JWT errors for better debugging
+    if (err.name === 'TokenExpiredError') {
+      console.error("Token verification failed: Token Expired");
+      return res.status(401).json({ msg: 'Token is expired. Please log in again.' });
+    } else if (err.name === 'JsonWebTokenError') {
+      console.error("Token verification failed: Invalid Token -", err.message);
+      return res.status(401).json({ msg: 'Token is not valid' }); // This is the error you might be seeing
+    } else {
+      console.error("Token verification failed: Unhandled error -", err.message);
+      return res.status(500).json({ msg: 'Server error during token verification.' });
+    }
   }
 };
 

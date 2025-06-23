@@ -4,7 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs"); // For hashing passwords
 const jwt = require("jsonwebtoken"); // For creating JSON Web Tokens
 const pool = require("../db"); // Database connection pool
-require("dotenv").config(); // Load JWT_SECRET
+require("dotenv").config(); // Load environment variables, including JWT_SECRET
 
 // Regex for USN validation: Must start with 1DA, then two digits, then 'CS', then three digits.
 // Example: 1DA22CS016
@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
-  // Validate email format (simple regex, more robust validation can be added)
+  // Validate email format
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ msg: "Please enter a valid email address" });
   }
@@ -43,29 +43,31 @@ router.post("/register", async (req, res) => {
 
   try {
     // Check if user already exists
-    let user = await pool.query("SELECT * FROM users WHERE email = $1 OR roll_no = $2", [email, roll_no]);
+    let existingUser = await pool.query("SELECT * FROM users WHERE email = $1 OR roll_no = $2", [email, roll_no]);
 
-    if (user.rows.length > 0) {
+    if (existingUser.rows.length > 0) {
       return res.status(400).json({ msg: "User with this email or Roll No already exists" });
     }
 
     // Hash the password
     const salt = await bcrypt.genSalt(10); // Generate a salt
-    const password_hash = await bcrypt.hash(password, salt); // Hash password with the salt
+    const hashedPassword = await bcrypt.hash(password, salt); // Hash password with the salt
 
     // Insert new user into the database
-    const newUser = await pool.query(
+    const newUserResult = await pool.query(
       "INSERT INTO users (email, password_hash, roll_no, branch) VALUES ($1, $2, $3, $4) RETURNING id, email, roll_no, branch, created_at",
-      [email, password_hash, roll_no, branch]
+      [email, hashedPassword, roll_no, branch]
     );
+
+    const user = newUserResult.rows[0];
 
     // Create a JWT payload
     const payload = {
       user: {
-        id: newUser.rows[0].id,
-        email: newUser.rows[0].email,
-        roll_no: newUser.rows[0].roll_no,
-        branch: newUser.rows[0].branch
+        id: user.id,
+        email: user.email,
+        roll_no: user.roll_no,
+        branch: user.branch
       },
     };
 
@@ -75,7 +77,10 @@ router.post("/register", async (req, res) => {
       process.env.JWT_SECRET, // Your secret key from .env
       { expiresIn: '1h' }, // Token expires in 1 hour
       (err, token) => {
-        if (err) throw err;
+        if (err) {
+          console.error("Error signing JWT during registration:", err.message);
+          return res.status(500).send("Server error: Token generation failed.");
+        }
         res.status(201).json({ msg: "User registered successfully", token, user: payload.user });
       }
     );
@@ -98,14 +103,16 @@ router.post("/login", async (req, res) => {
 
   try {
     // Check if user exists
-    let user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    let userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
-    if (user.rows.length === 0) {
+    if (userResult.rows.length === 0) {
       return res.status(400).json({ msg: "Invalid Credentials" }); // Generic message for security
     }
 
+    const user = userResult.rows[0];
+
     // Compare provided password with hashed password in DB
-    const isMatch = await bcrypt.compare(password, user.rows[0].password_hash);
+    const isMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid Credentials" });
@@ -114,10 +121,10 @@ router.post("/login", async (req, res) => {
     // Create JWT payload
     const payload = {
       user: {
-        id: user.rows[0].id,
-        email: user.rows[0].email,
-        roll_no: user.rows[0].roll_no,
-        branch: user.rows[0].branch
+        id: user.id,
+        email: user.email,
+        roll_no: user.roll_no,
+        branch: user.branch
       },
     };
 
@@ -127,7 +134,10 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' },
       (err, token) => {
-        if (err) throw err;
+        if (err) {
+          console.error("Error signing JWT during login:", err.message);
+          return res.status(500).send("Server error: Token generation failed.");
+        }
         res.json({ msg: "Logged in successfully", token, user: payload.user });
       }
     );

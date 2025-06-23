@@ -1,371 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Feedback</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+// backend/routes/feedback.js
+const express = require("express");
+const router = express.Router();
+const pool = require("../db");
+const auth = require("../middleware/auth"); // Import auth middleware
 
-    <style>
-        /* Custom styles to apply Google Fonts */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        h1, h2 {
-            font-family: 'Montserrat', sans-serif;
-        }
+// @route   POST /api/feedback
+// @desc    Submit new feedback with multiple questions
+// @access  Private (requires authentication)
+router.post("/", auth, async (req, res) => {
+  // Get email from authenticated user, which is attached by the auth middleware
+  const submitted_by = req.user.email;
 
-        /* Custom Radio Button Styling */
-        input[type="radio"] {
-            /* Hide default radio button */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            /* Use a sibling selector for custom styling */
-            /* This input must be directly followed by the element you want to style */
-            /* For this to work, we need a hidden input + a styled div/span, or use peer-checked */
-        }
+  // Destructure the new question responses from the request body
+  const {
+    faculty_name,
+    q1_clarity,
+    q2_engagement,
+    q3_support,
+    q4_fairness,
+    q5_overall,
+    comment // Comment remains the same
+  } = req.body;
 
-        /* Using peer-checked for custom radio button visual */
-        /* Make sure your input has the 'peer' class and your visual element has 'peer-checked:' */
-        .custom-radio-button {
-            @apply w-5 h-5 rounded-full border-2 border-blue-400 flex items-center justify-center transition duration-200;
-        }
+  // Basic validation for all required fields
+  if (!faculty_name || !q1_clarity || !q2_engagement || !q3_support || !q4_fairness || !q5_overall || !comment) {
+    return res.status(400).json({ msg: "Please answer all questions and provide a comment." });
+  }
 
-        .custom-radio-button::after {
-            content: '';
-            @apply block w-2.5 h-2.5 rounded-full bg-white transform scale-0 opacity-0 transition duration-200;
-        }
+  // Define allowed choices for validation
+  const allowedChoices = ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"];
+  const validateChoice = (choice) => allowedChoices.includes(choice);
 
-        input[type="radio"]:checked + .custom-radio-button {
-            @apply bg-blue-600 border-blue-600; /* Fill color when checked */
-        }
+  if (!validateChoice(q1_clarity) || !validateChoice(q2_engagement) || !validateChoice(q3_support) || !validateChoice(q4_fairness) || !validateChoice(q5_overall)) {
+      return res.status(400).json({ msg: "Invalid choice provided for one or more questions." });
+  }
 
-        input[type="radio"]:checked + .custom-radio-button::after {
-            @apply scale-100 opacity-100; /* Show inner dot when checked */
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center py-12 px-4">
-    <div class="max-w-4xl w-full bg-white p-10 lg:p-12 rounded-xl shadow-2xl border-t-8 border-blue-600 transform transition-all duration-300 ease-in-out hover:shadow-3xl">
-        <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-8 text-center tracking-tight leading-tight">
-            Comprehensive Faculty Feedback
-        </h1>
+  try {
+    const result = await pool.query(
+      "INSERT INTO feedback (faculty_name, q1_clarity, q2_engagement, q3_support, q4_fairness, q5_overall, comment, submitted_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+      [faculty_name, q1_clarity, q2_engagement, q3_support, q4_fairness, q5_overall, comment, submitted_by]
+    );
+    res.status(201).json({ message: "Feedback submitted successfully!", data: result.rows[0] });
+  } catch (err) {
+    console.error("Error submitting feedback:", err);
+    res.status(500).json({ error: "Failed to submit feedback", details: err.message });
+  }
+});
 
-        <form id="feedbackForm" class="space-y-8">
-            <div>
-                <label for="faculty_name" class="block text-gray-800 text-lg font-semibold mb-2">Faculty Member:</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    </div>
-                    <input type="text" id="faculty_name" name="faculty_name" required
-                           placeholder="e.g., Dr. Jane Doe"
-                           class="pl-12 shadow-sm border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-500 transition duration-300 ease-in-out text-base">
-                </div>
-            </div>
+// @route   GET /api/feedback/my
+// @desc    Get feedback entries submitted by the authenticated user
+// @access  Private (requires authentication)
+router.get("/my", auth, async (req, res) => {
+  try {
+    // The auth middleware attaches user information (like email) to req.user
+    const userEmail = req.user.email;
 
-            <div id="questions-container" class="space-y-6">
-                </div>
-
-            <div>
-                <label for="comment" class="block text-gray-800 text-lg font-semibold mb-2">Additional Comments:</label>
-                <div class="relative">
-                    <div class="absolute top-3 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <textarea id="comment" name="comment" rows="5" placeholder="Share any further comments or suggestions..." required
-                              class="pl-12 shadow-sm border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-500 transition duration-300 ease-in-out resize-y text-base"></textarea>
-                </div>
-            </div>
-
-            <button type="submit" id="submitButton"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-offset-2 focus:ring-blue-500 text-lg">
-                Submit Feedback
-            </button>
-        </form>
-
-        <hr class="my-12 border-t-2 border-gray-200">
-
-        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Your Recent Feedback Entries</h2>
-        <div id="feedbackList" class="space-y-6">
-            <p class="text-gray-500 text-center text-xl animate-pulse py-8" id="loadingMessage">Loading your feedback...</p>
-            </div>
-    </div>
-
-    <div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 ease-in-out opacity-0">
-        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center transform scale-90 transition-all duration-300 ease-out">
-            <div id="alertIcon" class="text-5xl mb-4 mx-auto w-16 h-16 flex items-center justify-center rounded-full"></div>
-            <p id="alertMessage" class="text-xl font-semibold text-gray-800 mb-6"></p>
-            <button id="alertCloseButton" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
-                OK
-            </button>
-        </div>
-    </div>
-
-    <script type="module">
-        // Import authentication utilities
-        import { requireAuth, getAuthToken } from './auth.js';
-
-        // Ensure user is authenticated before proceeding
-        requireAuth();
-
-        const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com"; // <-- IMPORTANT: Confirm your backend URL!
-
-        const questionsData = [
-            { name: "q1_clarity", text: "1. The faculty member's explanations and instructional methods helped me grasp complex topics effectively." },
-            { name: "q2_engagement", text: "2. The faculty member actively encouraged student participation and facilitated meaningful discussions." },
-            { name: "q3_support", text: "3. The faculty member provided constructive and timely feedback that aided my learning." },
-            { name: "q4_fairness", text: "4. The course content and activities were relevant and prepared me for real-world applications/further study." },
-            { name: "q5_overall", text: "5. The faculty member demonstrated professionalism and respect for all students." }
-        ];
-
-        const ratingOptions = ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"];
-
-        // Function to dynamically generate question blocks for consistent styling
-        function generateQuestionBlocks() {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = ''; // Clear existing content
-
-            questionsData.forEach((q, index) => {
-                const questionDiv = document.createElement('div');
-                
-                // Assign different gradient colors based on index for variety
-                const colors = [
-                    { from: 'blue-50', to: 'blue-100', border: 'blue-300' },
-                    { from: 'green-50', to: 'green-100', border: 'green-300' },
-                    { from: 'purple-50', to: 'purple-100', border: 'purple-300' },
-                    { from: 'yellow-50', to: 'yellow-100', border: 'yellow-300' },
-                    { from: 'red-50', to: 'red-100', border: 'red-300' }
-                ];
-                const color = colors[index % colors.length]; // Cycle through colors
-
-                questionDiv.className = `p-6 bg-gradient-to-r from-${color.from} to-${color.to} rounded-lg shadow-sm border-l-4 border-${color.border} hover:shadow-lg transition duration-200 transform hover:-translate-y-0.5`;
-
-                let radioButtonsHtml = '';
-                ratingOptions.forEach(option => {
-                    // Use a hidden radio input and a styled span for custom radio buttons
-                    // The 'peer' class on the input allows styling of the next sibling based on checked state
-                    radioButtonsHtml += `
-                        <label class="inline-flex items-center group cursor-pointer">
-                            <input type="radio" name="${q.name}" value="${option}"
-                                   class="hidden peer" required>
-                            <span class="custom-radio-button transition duration-200"></span>
-                            <span class="ml-2 text-gray-700 group-hover:text-blue-700 font-medium transition duration-200 peer-checked:text-blue-800 peer-checked:font-semibold">${option}</span>
-                        </label>
-                    `;
-                });
-
-                questionDiv.innerHTML = `
-                    <p class="block text-gray-800 text-base font-semibold mb-4">${q.text}</p>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-4 justify-items-center sm:justify-items-start">
-                        ${radioButtonsHtml}
-                    </div>
-                `;
-                container.appendChild(questionDiv);
-            });
-        }
+    // Select all columns for feedback submitted by the current user
+    const result = await pool.query(
+      "SELECT id, faculty_name, q1_clarity, q2_engagement, q3_support, q4_fairness, q5_overall, comment, submitted_at FROM feedback WHERE submitted_by = $1 ORDER BY submitted_at DESC",
+      [userEmail]
+    );
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching user's feedback:", err);
+    res.status(500).json({ error: "Failed to fetch your feedback", details: err.message });
+  }
+});
 
 
-        // --- Custom Alert System (Enhanced) ---
-        function showCustomAlert(message, type = 'info') { // type: 'success', 'error', 'info'
-            const customAlert = document.getElementById('customAlert');
-            const alertMessage = document.getElementById('alertMessage');
-            const alertIcon = document.getElementById('alertIcon');
-
-            // Reset classes
-            alertIcon.className = 'text-5xl mb-4 mx-auto w-16 h-16 flex items-center justify-center rounded-full';
-
-            // Apply type-specific styling
-            if (type === 'success') {
-                alertIcon.classList.add('bg-green-100', 'text-green-600');
-                alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
-            } else if (type === 'error') {
-                alertIcon.classList.add('bg-red-100', 'text-red-600');
-                alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.174 3.35 1.9 3.35h13.713c1.726 0 2.766-1.85 1.9-3.35L13.73 7.82c-.774-1.342-2.694-1.342-3.468 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>';
-            } else { // 'info' or default
-                alertIcon.classList.add('bg-blue-100', 'text-blue-600');
-                alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>';
-            }
-
-            alertMessage.textContent = message;
-            customAlert.classList.remove('hidden');
-            setTimeout(() => {
-                customAlert.classList.remove('opacity-0');
-                customAlert.querySelector('div').classList.remove('scale-90');
-                customAlert.querySelector('div').classList.add('scale-100');
-            }, 10); // Small delay for transition to apply
-        }
-
-        document.getElementById('alertCloseButton').addEventListener('click', () => {
-            const customAlert = document.getElementById('customAlert');
-            customAlert.classList.add('opacity-0');
-            customAlert.querySelector('div').classList.add('scale-90');
-            customAlert.querySelector('div').classList.remove('scale-100');
-            setTimeout(() => {
-                customAlert.classList.add('hidden');
-            }, 300); // Match transition duration
-        });
-        // --- End Custom Alert System ---
+// Optional: @route   GET /api/feedback
+// @desc    Get all feedback entries (consider restricting this to admin only)
+// @access  Private (requires authentication)
+// IMPORTANT: If this route is left as is, any authenticated user can still
+// fetch ALL feedback if they know this endpoint. For true confidentiality,
+// remove this route or add an isAdmin middleware if you have user roles.
+router.get("/", auth, async (req, res) => {
+  try {
+    // Select all columns including the new question fields
+    const result = await pool.query("SELECT id, faculty_name, q1_clarity, q2_engagement, q3_support, q4_fairness, q5_overall, comment, submitted_by, submitted_at FROM feedback ORDER BY submitted_at DESC");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching all feedback:", err);
+    res.status(500).json({ error: "Failed to fetch all feedback", details: err.message });
+  }
+});
 
 
-        async function fetchFeedback() {
-            const feedbackList = document.getElementById('feedbackList');
-            const loadingMessage = document.getElementById('loadingMessage');
-            feedbackList.innerHTML = ''; // Clear previous entries
-            loadingMessage.classList.remove('hidden'); // Show loading message
-
-            const token = getAuthToken();
-            if (!token) {
-                showCustomAlert("Authentication token not found. Please log in.", 'error');
-                loadingMessage.classList.add('hidden');
-                feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Please log in to view your feedback.</p>';
-                return;
-            }
-
-            try {
-                // Fetch ONLY feedback submitted by the current user
-                const response = await fetch(`${BACKEND_URL}/api/feedback/my`, { // CRITICAL: This is the endpoint for fetching user-specific feedback
-                    headers: {
-                        'x-auth-token': token
-                    }
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.msg || `HTTP error! status: ${response.status}`);
-                }
-                const feedbackEntries = await response.json();
-
-                loadingMessage.classList.add('hidden'); // Hide loading message
-
-                if (feedbackEntries.length === 0) {
-                    feedbackList.innerHTML = '<p class="text-gray-600 text-center text-xl py-8">You have not submitted any feedback yet.</p>';
-                } else {
-                    feedbackEntries.forEach(entry => {
-                        const feedbackCard = document.createElement('div');
-                        // Added hover transform for feedback cards
-                        feedbackCard.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition duration-200 transform hover:-translate-y-0.5';
-                        feedbackCard.innerHTML = `
-                            <p class="text-2xl font-bold text-blue-700 mb-2">${entry.faculty_name}</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 text-gray-700 text-base mb-4">
-                                <p><strong>Clarity:</strong> <span class="font-medium">${entry.q1_clarity}</span></p>
-                                <p><strong>Engagement:</strong> <span class="font-medium">${entry.q2_engagement}</span></p>
-                                <p><strong>Support:</strong> <span class="font-medium">${entry.q3_support}</span></p>
-                                <p><strong>Fairness:</strong> <span class="font-medium">${entry.q4_fairness}</span></p>
-                                <p><strong>Overall:</strong> <span class="font-medium">${entry.q5_overall}</span></p>
-                            </div>
-                            ${entry.comment ? `<p class="text-gray-800 italic mb-4 border-l-4 border-blue-200 pl-3">"${entry.comment}"</p>` : ''}
-                            <p class="text-gray-500 text-xs mt-3 text-right">
-                                Submitted on ${new Date(entry.submitted_at).toLocaleString()}
-                            </p>
-                        `;
-                        feedbackList.appendChild(feedbackCard);
-                    });
-                }
-            } catch (error) {
-                console.error("Error fetching feedback:", error);
-                loadingMessage.classList.add('hidden'); // Hide loading message even on error
-                showCustomAlert(error.message || "Failed to load your feedback. Please check your network and server status.", 'error');
-                feedbackList.innerHTML = '<p class="text-red-500 text-center text-lg py-8">Failed to load your feedback. Please check your backend and try again.</p>';
-            }
-        }
-
-        document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const submitButton = document.getElementById('submitButton');
-            submitButton.disabled = true; // Disable button
-            submitButton.textContent = 'Submitting...'; // Change text
-            submitButton.classList.add('opacity-70', 'cursor-not-allowed'); // Add disabled style
-
-            const formData = new FormData(this);
-            const body = {};
-
-            // Collect all radio button values and other fields
-            body.faculty_name = formData.get('faculty_name');
-            body.q1_clarity = formData.get('q1_clarity');
-            body.q2_engagement = formData.get('q2_engagement');
-            body.q3_support = formData.get('q3_support');
-            body.q4_fairness = formData.get('q4_fairness');
-            body.q5_overall = formData.get('q5_overall');
-            body.comment = formData.get('comment');
-
-            // Client-side validation to ensure all required fields are filled
-            if (!body.faculty_name.trim()) {
-                showCustomAlert("Please enter the Faculty Member's name.", 'error');
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit Feedback';
-                submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
-                return;
-            }
-
-            const questions = ['q1_clarity', 'q2_engagement', 'q3_support', 'q4_fairness', 'q5_overall'];
-            for (const q of questions) {
-                if (!body[q]) {
-                    showCustomAlert("Please answer all 5 questions before submitting.", 'error');
-                    submitButton.disabled = false; // Re-enable button
-                    submitButton.textContent = 'Submit Feedback'; // Reset text
-                    submitButton.classList.remove('opacity-70', 'cursor-not-allowed'); // Remove disabled style
-                    return; // Stop submission
-                }
-            }
-
-            // The comment field is marked as `required` in HTML. If you intend for it to be optional, remove the `required` attribute.
-            // If it should remain required, this validation is good:
-            if (!body.comment.trim()) {
-                 showCustomAlert("Please provide additional comments.", 'error');
-                 submitButton.disabled = false;
-                 submitButton.textContent = 'Submit Feedback';
-                 submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
-                 return;
-            }
-
-
-            const token = getAuthToken();
-            if (!token) {
-                showCustomAlert("You must be logged in to submit feedback.", 'error');
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit Feedback';
-                submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
-                return;
-            }
-
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/feedback`, { // POST still goes to /api/feedback
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-auth-token": token
-                    },
-                    body: JSON.stringify(body),
-                });
-
-                const result = await res.json();
-
-                if (res.ok) {
-                    showCustomAlert(result.message || "Feedback submitted successfully!", 'success');
-                    this.reset(); // Clear the form
-                    // Uncheck all radio buttons after submission
-                    document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-                    fetchFeedback(); // Refresh the list to show new feedback
-                } else {
-                    showCustomAlert(result.error || result.msg || "Failed to submit feedback. Please ensure all fields are filled.", 'error');
-                }
-            } catch (error) {
-                console.error("Error submitting feedback:", error);
-                showCustomAlert("An unexpected error occurred. Please check your network and try again.", 'error');
-            } finally {
-                submitButton.disabled = false; // Re-enable button
-                submitButton.textContent = 'Submit Feedback'; // Reset text
-                submitButton.classList.remove('opacity-70', 'cursor-not-allowed'); // Remove disabled style
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            generateQuestionBlocks(); // Generate questions on DOMContentLoaded
-            fetchFeedback();
-        });
-    </script>
-</body>
-</html>
+module.exports = router;

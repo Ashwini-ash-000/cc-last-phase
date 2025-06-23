@@ -156,9 +156,8 @@
         }
 
         try {
-            // *** IMPORTANT CHANGE HERE ***
             // Fetch ONLY suggestions submitted by the current user
-            const response = await fetch(`${BACKEND_URL}/api/suggestions/my`, {
+            const response = await fetch(`${BACKEND_URL}/api/suggestions/my`, { // This endpoint is crucial
                 headers: {
                     'x-auth-token': token // Send the token in the header
                 }

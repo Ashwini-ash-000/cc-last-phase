@@ -2,14 +2,14 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
-const auth = require("../middleware/auth"); // <-- NEW: Import auth middleware
+const auth = require("../middleware/auth"); // Import auth middleware
 
 // @route   POST /api/suggestions
 // @desc    Submit a new suggestion
 // @access  Private (requires authentication)
-router.post("/", auth, async (req, res) => { // <-- NEW: Add auth middleware
+router.post("/", auth, async (req, res) => {
   // Get submitted_by from the authenticated user's email (from JWT payload)
-  const submitted_by = req.user.email; // <-- Use authenticated user's email
+  const submitted_by = req.user.email; // Use authenticated user's email
   const { title, suggestion } = req.body; // Submitted_by is no longer in body
 
   // Basic validation
@@ -29,16 +29,37 @@ router.post("/", auth, async (req, res) => { // <-- NEW: Add auth middleware
   }
 });
 
-// @route   GET /api/suggestions
-// @desc    Get all suggestion entries
+// @route   GET /api/suggestions/my
+// @desc    Get suggestion entries submitted by the authenticated user
 // @access  Private (requires authentication)
-router.get("/", auth, async (req, res) => { // <-- NEW: Add auth middleware
+// This is the new route needed to support frontend's fetchSuggestions
+router.get("/my", auth, async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM suggestions ORDER BY submitted_at DESC");
+    const userEmail = req.user.email; // Get email from authenticated user
+
+    const result = await pool.query(
+      "SELECT id, title, suggestion, submitted_by, submitted_at, status FROM suggestions WHERE submitted_by = $1 ORDER BY submitted_at DESC",
+      [userEmail]
+    );
     res.status(200).json(result.rows);
   } catch (err) {
-    console.error("Error fetching suggestions:", err);
-    res.status(500).json({ error: "Failed to fetch suggestions", details: err.message });
+    console.error("Error fetching user's suggestions:", err);
+    res.status(500).json({ error: "Failed to fetch your suggestions", details: err.message });
+  }
+});
+
+// @route   GET /api/suggestions
+// @desc    Get all suggestion entries (consider restricting this to admin only)
+// @access  Private (requires authentication)
+// IMPORTANT: For production, this route should likely be restricted to admin users
+// or removed if only user-specific suggestions are to be displayed.
+router.get("/", auth, async (req, res) => {
+  try {
+    const result = await pool.query("SELECT id, title, suggestion, submitted_by, submitted_at, status FROM suggestions ORDER BY submitted_at DESC");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching all suggestions:", err);
+    res.status(500).json({ error: "Failed to fetch all suggestions", details: err.message });
   }
 });
 

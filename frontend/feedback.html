@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Feedback</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         /* Custom styles to apply Google Fonts */
@@ -17,27 +17,19 @@
         }
 
         /* Custom Radio Button Styling */
-        input[type="radio"] {
-            /* Hide default radio button */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            /* Use a sibling selector for custom styling */
-            /* This input must be directly followed by the element you want to style */
-            /* For this to work, we need a hidden input + a styled div/span, or use peer-checked */
-        }
-
-        /* Using peer-checked for custom radio button visual */
         /* Make sure your input has the 'peer' class and your visual element has 'peer-checked:' */
         .custom-radio-button {
+            /* This will be the visible circular part of the radio button */
             @apply w-5 h-5 rounded-full border-2 border-blue-400 flex items-center justify-center transition duration-200;
         }
 
         .custom-radio-button::after {
+            /* This will be the inner dot that appears when checked */
             content: '';
             @apply block w-2.5 h-2.5 rounded-full bg-white transform scale-0 opacity-0 transition duration-200;
         }
 
+        /* Styles for when the hidden radio input is checked */
         input[type="radio"]:checked + .custom-radio-button {
             @apply bg-blue-600 border-blue-600; /* Fill color when checked */
         }

@@ -6,16 +6,18 @@ const express = require("express");
 // This is essential for allowing your frontend (running on a different domain/port)
 // to make requests to your backend API.
 const cors = require("cors");
+// Import the 'path' module, a core Node.js module for working with file and directory paths.
+const path = require("path");
 // Load environment variables from a .env file into process.env.
 // This allows you to configure sensitive information like database URLs and server ports
 // without hardcoding them directly into the source code.
 require("dotenv").config();
 
-// Import the route modules for feedback and suggestions.
+// Import the route modules for feedback, suggestions, and authentication.
 // These modules define the API endpoints related to each functionality.
 const feedbackRoutes = require("./routes/feedback");
 const suggestionRoutes = require("./routes/suggestion");
-const authRoutes = require("./routes/auth"); // <-- NEW: Import auth routes
+const authRoutes = require("./routes/auth");
 
 // Initialize the Express application.
 const app = express();
@@ -31,21 +33,57 @@ app.use(cors());
 //    This allows you to access JSON data sent from the frontend via `req.body`.
 app.use(express.json());
 
+// --- STATIC FILE SERVING CONFIGURATION ---
+// This is the core change to display your frontend.
+
+// Serve static files from the 'frontend' directory.
+// `__dirname` is the absolute path to the directory where the current script (index.js) is located (i.e., 'backend').
+// `path.join(__dirname, '..', 'frontend')` constructs the correct absolute path to your 'frontend' folder:
+// It goes up one level from 'backend' (to your project root 'cc mini proj') and then down into 'frontend'.
+// Express will now look for requested files (like index.html, style.css, dashboard.html) in this directory.
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+
+// Handle all other non-API routes by serving the 'index.html' file.
+// This is crucial for single-page application (SPA) behavior or to ensure that direct access
+// to specific paths (like /dashboard or /login) in your browser still loads your main HTML file.
+// It checks if the requested path does NOT start with '/api'. If it doesn't, it sends 'index.html'.
+// This prevents your frontend routes from being mistaken for backend API routes.
+app.get('*', (req, res) => {
+    // If the request path does not begin with '/api', it's likely a frontend route.
+    if (!req.path.startsWith('/api')) {
+        // Send the main 'index.html' file from your frontend directory.
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+    } else {
+        // If it starts with '/api' but doesn't match any defined API route,
+        // send a 404 response indicating the API endpoint was not found.
+        res.status(404).send('API endpoint not found');
+    }
+});
+
+// --- END STATIC FILE SERVING CONFIGURATION ---
+
+
 // API Routes Mounting:
+// Mount the authentication routes under the '/api/auth' path.
+// All routes defined in authRoutes will be prefixed with /api/auth.
+app.use("/api/auth", authRoutes);
 // Mount the feedback routes under the '/api/feedback' path.
-// All routes defined in feedbackRoutes (e.g., POST /, GET /) will be prefixed with /api/feedback.
-app.use("/api/auth", authRoutes);       // <-- NEW: Mount auth routes
+// All routes defined in feedbackRoutes will be prefixed with /api/feedback.
 app.use("/api/feedback", feedbackRoutes);
 // Mount the suggestion routes under the '/api/suggestions' path.
-// All routes defined in suggestionRoutes (e.g., POST /, GET /) will be prefixed with /api/suggestions.
+// All routes defined in suggestionRoutes will be prefixed with /api/suggestions.
 app.use("/api/suggestions", suggestionRoutes);
 
-// Root Route:
-// Define a simple GET route for the root URL ("/").
-// This is often used to quickly check if the API server is running.
-app.get("/", (req, res) => {
-  res.send("Faculty Feedback Portal API is running");
-});
+
+// The original root route `app.get("/")` is now commented out/removed
+// because the `app.use(express.static(...))` middleware and `app.get('*', ...)`
+// will handle requests to '/' by serving 'index.html' from your frontend.
+// If you leave both, the static middleware will take precedence for '/',
+// but it's cleaner to remove the redundant API root route.
+// app.get("/", (req, res) => {
+//   res.send("Faculty Feedback Portal API is running");
+// });
+
 
 // Start the Server:
 // Make the Express app listen for incoming requests on the specified port.

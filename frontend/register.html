@@ -6,56 +6,97 @@
     <title>Register - Faculty Feedback Portal</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        royal: {
+                            dark: '#0f172a',
+                            gold: '#d4af37',
+                            navy: '#1e293b',
+                            slate: '#334155',
+                            light: '#e2e8f0',
+                            emerald: '#10b981'
+                        },
+                    },
+                    fontFamily: {
+                        heading: ['Cinzel', 'serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-sans">
-<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Register</h1>
-    <form id="registerForm" class="space-y-4">
+<body class="bg-royal-dark flex items-center justify-center min-h-screen p-4 font-body text-royal-light">
+<div class="relative bg-royal-navy p-10 rounded-xl shadow-2xl w-full max-w-lg border-t-8 border-royal-gold">
+    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-royal-gold p-3 rounded-full shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-royal-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+    </div>
+
+    <h1 class="text-3xl font-heading font-semibold text-royal-gold mb-2 text-center mt-4">Faculty Feedback Portal</h1>
+    <h2 class="text-2xl font-heading font-medium text-royal-light mb-6 text-center">Create Account</h2>
+
+    <form id="registerForm" class="space-y-5">
         <div>
-            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+            <label for="email" class="block text-royal-light text-sm font-medium mb-2 uppercase tracking-wider">Email</label>
             <input type="email" id="email" name="email" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                   class="bg-royal-dark border-royal-slate text-royal-light shadow-sm appearance-none border rounded w-full py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-royal-gold focus:border-royal-gold transition duration-150 placeholder-royal-slate">
         </div>
+
         <div>
-            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+            <label for="password" class="block text-royal-light text-sm font-medium mb-2 uppercase tracking-wider">Password</label>
             <input type="password" id="password" name="password" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            <p class="text-xs text-gray-500 mt-1">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char.</p>
+                   class="bg-royal-dark border-royal-slate text-royal-light shadow-sm appearance-none border rounded w-full py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-royal-gold focus:border-royal-gold transition duration-150 placeholder-royal-slate">
+            <p class="text-xs text-royal-slate mt-2 italic">Minimum 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character</p>
         </div>
+
         <div>
-            <label for="roll_no" class="block text-gray-700 text-sm font-bold mb-2">Roll No (e.g., 1DA22CS016):</label>
-            <input type="text" id="roll_no" name="roll_no" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <label for="roll_no" class="block text-royal-light text-sm font-medium mb-2 uppercase tracking-wider">Roll Number</label>
+            <input type="text" id="roll_no" name="roll_no" placeholder="e.g., 1DA22CS016" required
+                   class="bg-royal-dark border-royal-slate text-royal-light shadow-sm appearance-none border rounded w-full py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-royal-gold focus:border-royal-gold transition duration-150 placeholder-royal-slate">
         </div>
+
         <div>
-            <label for="branch" class="block text-gray-700 text-sm font-bold mb-2">Branch:</label>
+            <label for="branch" class="block text-royal-light text-sm font-medium mb-2 uppercase tracking-wider">Branch</label>
             <select id="branch" name="branch" required
-                    class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="">Select Branch</option>
+                    class="bg-royal-dark border-royal-slate text-royal-light shadow-sm appearance-none border rounded w-full py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-royal-gold focus:border-royal-gold transition duration-150">
+                <option value="" disabled selected>Select your branch</option>
                 <option value="CS">Computer Science</option>
                 <option value="EC">Electronics & Communication</option>
                 <option value="ME">Mechanical Engineering</option>
                 <option value="CV">Civil Engineering</option>
                 <option value="IS">Information Science</option>
                 <option value="AI">Artificial Intelligence</option>
-                <!-- Add more branches as needed -->
             </select>
         </div>
+
         <button type="submit"
-                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline">
+                class="bg-royal-emerald hover:bg-royal-gold text-royal-dark font-medium py-3 px-4 rounded w-full focus:outline-none focus:ring-2 focus:ring-royal-emerald focus:ring-offset-2 focus:ring-offset-royal-navy transition duration-150 uppercase tracking-wider mt-2 border border-royal-emerald">
             Register
         </button>
     </form>
-    <p class="mt-6 text-center text-gray-600">
-        Already have an account? <a href="login.html" class="text-blue-600 hover:underline">Login here</a>
+
+    <p class="mt-8 text-center text-royal-light">
+        Already have an account? <a href="login.html" class="text-royal-gold hover:underline font-medium transition duration-150">Login here</a>
     </p>
 </div>
 
 <!-- Custom Modal for Alerts -->
-<div id="customAlert" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-        <p id="alertMessage" class="text-lg mb-4"></p>
-        <button id="alertCloseButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+<div id="customAlert" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
+    <div class="bg-royal-navy p-8 rounded-xl shadow-2xl max-w-sm w-full text-center border-t-4 border-royal-gold transform transition-all duration-300 scale-95">
+        <div class="mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-royal-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <p id="alertMessage" class="text-lg font-heading text-royal-light mb-6"></p>
+        <button id="alertCloseButton" class="bg-royal-gold hover:bg-royal-dark text-royal-dark hover:text-royal-gold font-medium py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-royal-gold focus:ring-offset-2 focus:ring-offset-royal-navy transition duration-150 border border-royal-gold">
             OK
         </button>
     </div>
@@ -65,20 +106,27 @@
     // Import authentication utilities
     import { saveAuthData, redirectToDashboardIfAuthenticated } from './auth.js';
 
-    // IMPORTANT: Replace this with your actual backend URL from Render!
     const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com";
-    // Function to show custom alert
+
     function showCustomAlert(message) {
         document.getElementById('alertMessage').textContent = message;
-        document.getElementById('customAlert').classList.remove('hidden');
+        const alert = document.getElementById('customAlert');
+        alert.classList.remove('hidden');
+        setTimeout(() => {
+            alert.querySelector('div').classList.remove('scale-95');
+            alert.querySelector('div').classList.add('scale-100');
+        }, 10);
     }
 
-    // Event listener for the custom alert close button
     document.getElementById('alertCloseButton').addEventListener('click', () => {
-        document.getElementById('customAlert').classList.add('hidden');
+        const alert = document.getElementById('customAlert');
+        alert.querySelector('div').classList.remove('scale-100');
+        alert.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            alert.classList.add('hidden');
+        }, 200);
     });
 
-    // Redirect if already authenticated
     redirectToDashboardIfAuthenticated();
 
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
@@ -96,9 +144,9 @@
             const result = await res.json();
 
             if (res.ok) {
-                saveAuthData(result.token, result.user); // Save token and user info
+                saveAuthData(result.token, result.user);
                 showCustomAlert("Registration successful!");
-                window.location.href = 'dashboard.html'; // Redirect to dashboard
+                window.location.href = 'dashboard.html';
             } else {
                 showCustomAlert(result.msg || "Registration failed. Please check your inputs.");
             }

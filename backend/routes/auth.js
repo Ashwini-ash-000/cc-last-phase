@@ -79,14 +79,16 @@ router.post("/register", async (req, res) => {
       (err, token) => {
         if (err) {
           console.error("Error signing JWT during registration:", err.message);
-          return res.status(500).send("Server error: Token generation failed.");
+//          return res.status(500).send("Server error: Token generation failed.");
+          return res.status(500).json({ msg: "Server error: Token generation failed." });
         }
         res.status(201).json({ msg: "User registered successfully", token, user: payload.user });
       }
     );
   } catch (err) {
     console.error("Server error during registration:", err.message);
-    res.status(500).send("Server error");
+//    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 });
 

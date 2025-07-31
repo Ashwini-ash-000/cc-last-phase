@@ -81,7 +81,7 @@
     // Import authentication utilities
     import { saveAuthData, redirectToDashboardIfAuthenticated } from './auth.js';
 
-    const BACKEND_URL = "https://faculty-feedback-backend-n6st.onrender.com";
+    const BACKEND_URL = "https://cc-last-phase.onrender.com";
 
     function showCustomAlert(message) {
         document.getElementById('alertMessage').textContent = message;
@@ -116,14 +116,7 @@
                 body: JSON.stringify(body),
             });
 
-<!--            const result = await res.json();-->
-             let result;
-        try {
-            result = await res.json(); // Try parsing JSON
-        } catch (err) {
-            const text = await res.text(); // fallback if not JSON
-            throw new Error(text);
-        }
+            const result = await res.json();
 
             if (res.ok) {
                 saveAuthData(result.token, result.user);

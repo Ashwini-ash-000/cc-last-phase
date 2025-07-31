@@ -1,4 +1,5 @@
-// backend/db.js
+
+// backend/db.real.js
 
 // Import the Pool class from the 'pg' (node-postgres) library.
 // The Pool manages connections to the PostgreSQL database, handling connection pooling.

@@ -116,7 +116,14 @@
                 body: JSON.stringify(body),
             });
 
-            const result = await res.json();
+<!--            const result = await res.json();-->
+             let result;
+        try {
+            result = await res.json(); // Try parsing JSON
+        } catch (err) {
+            const text = await res.text(); // fallback if not JSON
+            throw new Error(text);
+        }
 
             if (res.ok) {
                 saveAuthData(result.token, result.user);
